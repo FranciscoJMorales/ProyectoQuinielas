@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Predicciones";
+}
+
+<div class="pagetitle">
+    <h1>Predicciones</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item">Pages</li>
+            <li class="breadcrumb-item active">Predicciones</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Mis predicciones</h5>
+                    <form>
+                        <p>Ingresa una predicción para este partido:</p>
+                        <div class="row justify-content-md-center">
+                            <div class="col-sm-auto" style="text-align:right;">
+                                <label for="team1" class="form-label">Comunicaciones</label>
+                                <input type="number" class="form-control prediction-form" id="team1" min="0" max="20">
+                            </div>
+                            <div class="col-sm-auto">
+                                <p> - </p>
+                            </div>
+                            <div class="col-sm-auto">
+                                <label for="team1" class="form-label">Municipal</label>
+                                <input type="number" class="form-control prediction-form" id="team1" min="0" max="20">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button class="btn btn-danger">Eliminar predicción</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
