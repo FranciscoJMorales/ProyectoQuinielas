@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using ProyectoQuinielas.Models.DTO;
 
 namespace ProyectoQuinielas.Models;
 
@@ -158,4 +159,6 @@ public partial class QuinielasContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public DbSet<ProyectoQuinielas.Models.DTO.QuinielaView> QuinielaView { get; set; } = default!;
 }
