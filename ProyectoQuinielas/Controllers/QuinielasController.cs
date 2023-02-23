@@ -25,7 +25,7 @@ namespace ProyectoQuinielas.Controllers
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            IEnumerable pools = context.Pools.Include(p => p.Users).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Public, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = !p.Public, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
             // var pools = context.Database.SqlQuery<QuinielaView>(qPools.GetAll(userid)).ToList();
             return View(pools);
         }

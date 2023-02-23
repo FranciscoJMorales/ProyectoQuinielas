@@ -69,7 +69,7 @@ namespace ProyectoQuinielas.Controllers
                 .FirstOrDefault();
             if (userExists != null)
                 return RedirectToAction("register");
-            User user = new User { Username = username, Email = email, Password = Encryption.EncryptPassword(password), Active = 1 };
+            User user = new User { Username = username, Email = email, Password = Encryption.EncryptPassword(password) };
             context.Users.Add(user);
             context.SaveChanges();
             _logger.LogInformation($"{user.Username} registered succesfully!");

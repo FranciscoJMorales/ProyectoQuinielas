@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using ProyectoQuinielas.Models.DTO;
 
 namespace ProyectoQuinielas.Models;
 
@@ -35,7 +34,7 @@ public partial class QuinielasContext : DbContext
             var connectionString = configuration.GetConnectionString("Default");
             optionsBuilder.UseMySQL(connectionString!);
         }
-    } 
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +45,10 @@ public partial class QuinielasContext : DbContext
             entity.HasIndex(e => e.PoolId, "pool_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Active)
+                .IsRequired()
+                .HasDefaultValueSql("b'1'")
+                .HasColumnName("active");
             entity.Property(e => e.GameDate)
                 .HasColumnType("datetime")
                 .HasColumnName("game_date");
@@ -73,7 +76,8 @@ public partial class QuinielasContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Active)
-                .HasColumnType("tinyint(1)")
+                .IsRequired()
+                .HasDefaultValueSql("b'1'")
                 .HasColumnName("active");
             entity.Property(e => e.AdminId).HasColumnName("admin_id");
             entity.Property(e => e.Name)
@@ -82,9 +86,7 @@ public partial class QuinielasContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");
-            entity.Property(e => e.Public)
-                .HasColumnType("tinyint(1)")
-                .HasColumnName("public");
+            entity.Property(e => e.Public).HasColumnName("public");
             entity.Property(e => e.UsersLimit).HasColumnName("users_limit");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.Pools)
@@ -101,6 +103,10 @@ public partial class QuinielasContext : DbContext
 
             entity.Property(e => e.GameId).HasColumnName("game_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Active)
+                .IsRequired()
+                .HasDefaultValueSql("b'1'")
+                .HasColumnName("active");
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.Team1Score).HasColumnName("team1_score");
             entity.Property(e => e.Team2Score).HasColumnName("team2_score");
@@ -122,7 +128,8 @@ public partial class QuinielasContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Active)
-                .HasColumnType("tinyint(1)")
+                .IsRequired()
+                .HasDefaultValueSql("b'1'")
                 .HasColumnName("active");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -159,6 +166,4 @@ public partial class QuinielasContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-    public DbSet<ProyectoQuinielas.Models.DTO.QuinielaView> QuinielaView { get; set; } = default!;
 }

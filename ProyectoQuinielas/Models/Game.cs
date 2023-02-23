@@ -19,6 +19,8 @@ public partial class Game
 
     public DateTime GameDate { get; set; }
 
+    public bool? Active { get; set; }
+
     public virtual Pool Pool { get; set; } = null!;
 
     public virtual ICollection<Prediction> Predictions { get; } = new List<Prediction>();

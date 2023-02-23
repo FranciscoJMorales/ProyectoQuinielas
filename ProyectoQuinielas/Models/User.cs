@@ -13,7 +13,7 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public sbyte Active { get; set; }
+    public bool? Active { get; set; }
 
     public virtual ICollection<Pool> Pools { get; } = new List<Pool>();
 

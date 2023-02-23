@@ -9,7 +9,7 @@ public class QuinielaView
 
     public string Nombre { get; set; } = null!;
 
-    public sbyte Privada { get; set; }
+    public bool Privada { get; set; }
 
     public int Participantes { get; set; }
 

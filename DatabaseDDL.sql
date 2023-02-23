@@ -6,17 +6,17 @@ CREATE TABLE Users(
   username VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  active BOOLEAN NOT NULL
+  active BIT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE Pools(
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   admin_id INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
-  public BOOLEAN NOT NULL,
+  public BIT NOT NULL,
   password VARCHAR(255) NULL,
   users_limit INTEGER NOT NULL,
-  active BOOLEAN NOT NULL,
+  active BIT NOT NULL DEFAULT 1,
   FOREIGN KEY (admin_id) REFERENCES Users(id)
 );
 
@@ -36,6 +36,7 @@ CREATE TABLE Games(
   team1_score INTEGER NULL,
   team2_score INTEGER NULL,
   game_date DATETIME NOT NULL,
+  active BIT NOT NULL DEFAULT 1,
   FOREIGN KEY (pool_id) REFERENCES Pools(id)
 );
 
@@ -45,6 +46,7 @@ CREATE TABLE Predictions(
   team1_score INTEGER NULL,
   team2_score INTEGER NULL,
   score INTEGER NULL,
+  active BIT NOT NULL DEFAULT 1,
   PRIMARY KEY (game_id, user_id),
   FOREIGN KEY (game_id) REFERENCES Games(id),
   FOREIGN KEY (user_id) REFERENCES Users(id)

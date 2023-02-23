@@ -15,6 +15,8 @@ public partial class Prediction
 
     public int? Score { get; set; }
 
+    public bool? Active { get; set; }
+
     public virtual Game Game { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

@@ -11,13 +11,13 @@ public partial class Pool
 
     public string Name { get; set; } = null!;
 
-    public sbyte Public { get; set; }
+    public bool Public { get; set; }
 
     public string? Password { get; set; }
 
     public int UsersLimit { get; set; }
 
-    public sbyte Active { get; set; }
+    public bool? Active { get; set; }
 
     public virtual User Admin { get; set; } = null!;
 
