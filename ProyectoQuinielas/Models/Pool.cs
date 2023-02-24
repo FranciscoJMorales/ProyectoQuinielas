@@ -11,7 +11,7 @@ public partial class Pool
 
     public string Name { get; set; } = null!;
 
-    public bool Public { get; set; }
+    public bool Private { get; set; }
 
     public string? Password { get; set; }
 

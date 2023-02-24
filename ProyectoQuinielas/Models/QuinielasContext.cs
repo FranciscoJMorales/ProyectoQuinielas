@@ -86,7 +86,7 @@ public partial class QuinielasContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");
-            entity.Property(e => e.Public).HasColumnName("public");
+            entity.Property(e => e.Private).HasColumnName("private");
             entity.Property(e => e.UsersLimit).HasColumnName("users_limit");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.Pools)

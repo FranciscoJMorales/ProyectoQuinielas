@@ -4,18 +4,32 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<script>
+    function toggleStyleClass(checkbox) {
+        element = document.getElementById("passinput");
+        if (checkbox.checked) {
+            element.classList.remove('d-none');
+        } else {
+            element.classList.add('d-none');
+        }
+    }
+</script>
 
-<h4>Pool</h4>
-<hr />
+<div class="pagetitle">
+    <h1>Predicciones</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
+            <li class="breadcrumb-item">Quinielas</li>
+            <li class="breadcrumb-item active">Nueva Quiniela</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AdminId" class="control-label"></label>
-                <select asp-for="AdminId" class="form-control" asp-items="ViewBag.AdminId"></select>
-            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -23,12 +37,12 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Public" /> @Html.DisplayNameFor(model => model.Public)
+                    <input class="form-check-input" asp-for="Private" onclick="toggleStyleClass(this)"  /> @Html.DisplayNameFor(model => model.Private)
                 </label>
             </div>
-            <div class="form-group">
+            <div class="form-group d-none" id="passinput">
                 <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password"/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
