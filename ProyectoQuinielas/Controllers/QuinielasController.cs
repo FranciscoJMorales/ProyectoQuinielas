@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoQuinielas.Models;
 using ProyectoQuinielas.Models.DTO;
 using ProyectoQuinielas.Queries;
+using ProyectoQuinielas.Utils;
 using System.Collections;
 
 namespace ProyectoQuinielas.Controllers
@@ -48,14 +49,28 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login");
-            return View(new Pool());
+            return View();
         }
 
         [HttpPost]
         public IActionResult Create(Pool pool)
         {
-
-            return View(new Pool());
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            pool.AdminId = (int)userid;
+            if (!pool.Private)
+                pool.Password = null;
+            else
+            {
+                if (string.IsNullOrEmpty(pool.Password))
+                    return RedirectToAction("create");
+            }
+            QuinielasContext context = new QuinielasContext();
+            context.Pools.Add(pool);
+            context.SaveChanges();
+            _logger.LogInformation($"Pool Id: {pool.Id} created");
+            return RedirectToAction("mine");
         }
     }
 }
