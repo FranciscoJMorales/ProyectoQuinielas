@@ -44,6 +44,49 @@ namespace ProyectoQuinielas.Controllers
         }
 
         [HttpGet]
+        public IActionResult Join()
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(userid);
+            ViewBag.User = user!.Username;
+            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.Users.Count < p.UsersLimit && !p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            return View(pools);
+        }
+
+        [HttpPost]
+        public IActionResult Join(int id, string? password)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(userid);
+            var pool = context.Pools.Find(id);
+            if (pool!.Private)
+            {
+                if (pool!.Password!.Equals(password))
+                {
+                    pool!.Users.Add(user!);
+                    context.SaveChanges();
+                    _logger.LogInformation($"User Id: {user.Id} joined Pool Id: {pool.Id}");
+                    return RedirectToAction("");
+                }
+                else
+                    return RedirectToAction("join");
+            }
+            else
+            {
+                pool!.Users.Add(user!);
+                context.SaveChanges();
+                _logger.LogInformation($"User Id: {user.Id} joined Pool Id: {pool.Id}");
+            }
+            return RedirectToAction("");
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             var userid = HttpContext.Session.GetInt32("userid");
