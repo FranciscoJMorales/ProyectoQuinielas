@@ -37,7 +37,7 @@ namespace ProyectoQuinielas.Controllers
         {
             QuinielasContext context = new QuinielasContext();
             var user = context.Users
-                .Where(u => u.Username == userid || u.Email == userid)
+                .Where(u => (u.Username == userid || u.Email == userid) && (bool)u.Active!)
                 .FirstOrDefault();
             if (user == null)
                 return RedirectToAction("login", "Home");

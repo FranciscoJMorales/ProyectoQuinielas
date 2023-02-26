@@ -71,7 +71,7 @@ namespace ProyectoQuinielas.Controllers
                 {
                     pool!.Users.Add(user!);
                     context.SaveChanges();
-                    _logger.LogInformation($"User Id: {user.Id} joined Pool Id: {pool.Id}");
+                    _logger.LogInformation($"User Id: {user!.Id} joined Pool Id: {pool.Id}");
                     return RedirectToAction("");
                 }
                 else
@@ -81,7 +81,7 @@ namespace ProyectoQuinielas.Controllers
             {
                 pool!.Users.Add(user!);
                 context.SaveChanges();
-                _logger.LogInformation($"User Id: {user.Id} joined Pool Id: {pool.Id}");
+                _logger.LogInformation($"User Id: {user!.Id} joined Pool Id: {pool.Id}");
             }
             return RedirectToAction("");
         }
