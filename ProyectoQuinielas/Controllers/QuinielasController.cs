@@ -22,7 +22,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
@@ -35,7 +35,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
@@ -48,7 +48,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
@@ -61,7 +61,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             var pool = context.Pools.Find(id);
@@ -91,7 +91,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             return View();
         }
 
@@ -100,7 +100,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             pool.AdminId = (int)userid;
             if (!pool.Private)
                 pool.Password = null;

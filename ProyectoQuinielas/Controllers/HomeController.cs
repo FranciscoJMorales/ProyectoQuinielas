@@ -20,7 +20,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             return RedirectToAction("dashboard");
         }
 
@@ -40,14 +40,14 @@ namespace ProyectoQuinielas.Controllers
                 .Where(u => u.Username == userid || u.Email == userid)
                 .FirstOrDefault();
             if (user == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             if (Encryption.ComparePasswords(user.Password, password))
             {
                 _logger.LogInformation($"{user.Username} logged in succesfully!");
                 HttpContext.Session.SetInt32("userid", user.Id);
                 return RedirectToAction("dashboard");
             }
-            return RedirectToAction("login");
+            return RedirectToAction("login", "Home");
         }
 
         [Route("/register")]
@@ -82,7 +82,7 @@ namespace ProyectoQuinielas.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("login");
+            return RedirectToAction("login", "Home");
         }
 
         [Route("/dashboard")]
@@ -91,7 +91,7 @@ namespace ProyectoQuinielas.Controllers
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
-                return RedirectToAction("login");
+                return RedirectToAction("login", "Home");
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
