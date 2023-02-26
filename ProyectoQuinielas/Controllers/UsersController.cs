@@ -3,6 +3,7 @@ using ProyectoQuinielas.Models.DTO;
 using ProyectoQuinielas.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using ProyectoQuinielas.Utils;
 
 namespace ProyectoQuinielas.Controllers
 {
@@ -45,7 +46,7 @@ namespace ProyectoQuinielas.Controllers
             return View(user);
         }
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult Update(User user)
         {
             var userid = HttpContext.Session.GetInt32("userid");
@@ -53,7 +54,7 @@ namespace ProyectoQuinielas.Controllers
                 return RedirectToAction("login");
             QuinielasContext context = new QuinielasContext();
             var userExists = context.Users
-                .Where(u => u.Username == user.Username || u.Email == user.Email)
+                .Where(u => (u.Username == user.Username || u.Email == user.Email) && u.Id != userid)
                 .FirstOrDefault();
             if (userExists != null)
                 return RedirectToAction("update");
@@ -64,24 +65,53 @@ namespace ProyectoQuinielas.Controllers
             return RedirectToAction("profile");
         }
 
-        [Route("change_password")]
+        [Route("/users/change_password")]
         [HttpGet]
         public IActionResult ChangePassword()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login");
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(userid);
+            ViewBag.User = user!.Username;
             return View();
         }
 
+        [Route("/users/change_password")]
+        [HttpPost]
+        public IActionResult ChangePassword(string old_password, string password, string password2)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            if (!password.Equals(password2))
+                return RedirectToAction("change_password");
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(userid);
+            if (Encryption.ComparePasswords(user!.Password, old_password))
+            {
+                user.Password = Encryption.EncryptPassword(password);
+                context.SaveChanges();
+                _logger.LogInformation($"{user.Username} updated password");
+                return RedirectToAction("profile");
+            }
+            return RedirectToAction("change_password");
+        }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login");
-            return View();
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(id);
+            user!.Active = false;
+            context.SaveChanges();
+            _logger.LogInformation($"User {user.Username} deleted");
+            HttpContext.Session.Clear();
+            return RedirectToAction("login");
         }
     }
 }

@@ -63,13 +63,15 @@
 
                             <div class="row">
                                 <div class="col-md-4">
-                                    <a class="btn btn-primary" href="edit">Actualizar perfil</a>
+                                    <a class="btn btn-primary" href="update">Actualizar perfil</a>
                                 </div>
                                 <div class="col-md-4">
                                     <a class="btn btn-warning" href="change_password">Cambiar contraseña</a>
                                 </div>
                                 <div class="col-md-4">
-                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model?.Id">Eliminar usuario</a>
+                                    <form asp-action="Delete" asp-route-id="@Model?.Id">
+                                        <button class="btn btn-danger" type="submit">Eliminar usuario</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
