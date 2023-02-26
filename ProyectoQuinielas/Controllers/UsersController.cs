@@ -30,8 +30,58 @@ namespace ProyectoQuinielas.Controllers
             QuinielasContext context = new QuinielasContext();
             var user = context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.AdminId == userid).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
             return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult Update()
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            QuinielasContext context = new QuinielasContext();
+            var user = context.Users.Find(userid);
+            ViewBag.User = user!.Username;
+            return View(user);
+        }
+
+        [HttpPut]
+        public IActionResult Update(User user)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            QuinielasContext context = new QuinielasContext();
+            var userExists = context.Users
+                .Where(u => u.Username == user.Username || u.Email == user.Email)
+                .FirstOrDefault();
+            if (userExists != null)
+                return RedirectToAction("update");
+            var currentUser = context.Users.Find(userid);
+            currentUser!.Username = user.Username;
+            currentUser!.Email = user.Email;
+            context.SaveChanges();
+            return RedirectToAction("profile");
+        }
+
+        [Route("change_password")]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            return View();
+        }
+
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login");
+            return View();
         }
     }
 }

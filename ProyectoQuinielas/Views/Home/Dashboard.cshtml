@@ -2,4 +2,23 @@
     ViewData["Title"] = "Inicio";
 }
 
-<h1>@ViewBag.User</h1>
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Inicio</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">¡Bienvenido @ViewBag.User!</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
