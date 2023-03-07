@@ -40,14 +40,22 @@ namespace ProyectoQuinielas.Controllers
                 .Where(u => (u.Username == userid || u.Email == userid) && (bool)u.Active!)
                 .FirstOrDefault();
             if (user == null)
-                return RedirectToAction("login", "Home");
+            {
+                ViewBag.Alert = "Login incorrecto";
+                ViewBag.AlertIcon = "error";
+                ViewBag.AlertMessage = "El usuario no existe";
+                return View();
+            }
             if (Encryption.ComparePasswords(user.Password, password))
             {
                 _logger.LogInformation($"{user.Username} logged in succesfully!");
                 HttpContext.Session.SetInt32("userid", user.Id);
                 return RedirectToAction("dashboard");
             }
-            return RedirectToAction("login", "Home");
+            ViewBag.Alert = "Login incorrecto";
+            ViewBag.AlertIcon = "error";
+            ViewBag.AlertMessage = "La contrasena no coincide";
+            return View();
         }
 
         [Route("/register")]

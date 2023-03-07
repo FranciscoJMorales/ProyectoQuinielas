@@ -57,6 +57,18 @@
 
     <!-- Template Main JS File -->
     <script src="~/js/main.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="~/js/sweetalert2@10.js"></script>
+    <script src="~/js/swal.js"></script>
+
+    @if (ViewBag.Alert != null)
+    {
+        <script>
+            showAlert('@ViewBag.Alert', '@ViewBag.AlertMessage', '@ViewBag.AlertIcon', false, 'Aceptar').then(confirmed => confirmed && console.log('Works!'));
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
