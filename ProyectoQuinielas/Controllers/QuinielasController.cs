@@ -112,5 +112,24 @@ namespace ProyectoQuinielas.Controllers
             _logger.LogInformation($"Pool Id: {pool.Id} created");
             return RedirectToAction("mine");
         }
+
+
+        [HttpPost]
+        public IActionResult Leave(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var user = _context.Users.Where(u => u.Id == userid)
+                         .Include(u => u.PoolsNavigation)
+                         .SingleOrDefault();
+            var pool = _context.Pools.Find(id);
+            user!.PoolsNavigation.Remove(pool!);
+            pool!.Users.Remove(user);
+            //_context.Pools.Add(pool);
+            _context.SaveChanges();
+            _logger.LogInformation($"User {user.Username} left pool {pool.Name}");
+            return new JsonResult(true);
+        }
     }
 }

@@ -57,7 +57,7 @@
                                     </td>
                                     <td>
                                         <a asp-action="Enter" asp-route-id="@item.Id">Ingresar</a> |
-                                        <a asp-action="Leave" asp-route-id="@item.Id" style="color:red">Abandonar</a>
+                                        <a href="#" onclick="confirmLeave(@item.Id)" style="color:red">Abandonar</a>
                                     </td>
                                 </tr>
                             }
@@ -70,3 +70,18 @@
         </div>
     </div>
 </section>
+
+@section Scripts{
+    <script>
+        function confirmLeave(id) {
+            showAlert('Confirmar', '¿Estás seguro que quieres abandonar esta quiniela?', 'warning', true, 'No', 'Sí').then(confirmed => {
+                if (confirmed) {
+                    const URL = `/quinielas/leave/${id}`;
+                    $.post(URL, function(data) {
+                        if (data) window.location.reload();
+                    });
+                }
+            });
+        }
+    </script>
+}
