@@ -64,8 +64,12 @@
 
     @if (ViewBag.Alert != null)
     {
+        if (ViewBag.RedirectUrl == null) ViewBag.RedirectUrl = "";
         <script>
-            showAlert('@ViewBag.Alert', '@ViewBag.AlertMessage', '@ViewBag.AlertIcon', false, 'Aceptar').then(confirmed => confirmed && console.log('Works!'));
+            showAlert('@ViewBag.Alert', '@ViewBag.AlertMessage', '@ViewBag.AlertIcon', false, 'Aceptar').then(confirmed => {
+                let url = '@ViewBag.RedirectUrl'
+                if (url) window.location.replace(url);
+            });
         </script>
     }
 
