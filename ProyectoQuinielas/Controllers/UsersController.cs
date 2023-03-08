@@ -10,9 +10,11 @@ namespace ProyectoQuinielas.Controllers
     public class UsersController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly QuinielasContext _context;
 
-        public UsersController(ILogger<HomeController> logger)
+        public UsersController(ILogger<HomeController> logger, QuinielasContext context)
         {
+            _context = context;
             _logger = logger;
         }
 
@@ -28,8 +30,7 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
             return View(user);
         }
@@ -40,8 +41,7 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
             return View(user);
         }
@@ -52,16 +52,15 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var userExists = context.Users
+            var userExists = _context.Users
                 .Where(u => (u.Username == user.Username || u.Email == user.Email) && u.Id != userid)
                 .FirstOrDefault();
             if (userExists != null)
                 return RedirectToAction("update");
-            var currentUser = context.Users.Find(userid);
+            var currentUser = _context.Users.Find(userid);
             currentUser!.Username = user.Username;
             currentUser!.Email = user.Email;
-            context.SaveChanges();
+            _context.SaveChanges();
             return RedirectToAction("profile");
         }
 
@@ -72,8 +71,7 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
             return View();
         }
@@ -87,12 +85,11 @@ namespace ProyectoQuinielas.Controllers
                 return RedirectToAction("login", "Home");
             if (!password.Equals(password2))
                 return RedirectToAction("change_password");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             if (Encryption.ComparePasswords(user!.Password, old_password))
             {
                 user.Password = Encryption.EncryptPassword(password);
-                context.SaveChanges();
+                _context.SaveChanges();
                 _logger.LogInformation($"{user.Username} updated password");
                 return RedirectToAction("profile");
             }
@@ -105,10 +102,9 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(id);
+            var user = _context.Users.Find(id);
             user!.Active = false;
-            context.SaveChanges();
+            _context.SaveChanges();
             _logger.LogInformation($"User {user.Username} deleted");
             HttpContext.Session.Clear();
             return RedirectToAction("login", "Home");

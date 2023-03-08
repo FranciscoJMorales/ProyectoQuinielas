@@ -9,9 +9,11 @@ namespace ProyectoQuinielas.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly QuinielasContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, QuinielasContext context)
         {
+            _context = context;
             _logger = logger;
         }
 
@@ -35,8 +37,7 @@ namespace ProyectoQuinielas.Controllers
         [HttpPost]
         public IActionResult Login(string userid, string password, string rememberMe)
         {
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users
+            var user = _context.Users
                 .Where(u => (u.Username == userid || u.Email == userid) && (bool)u.Active!)
                 .FirstOrDefault();
             if (user == null)
@@ -69,10 +70,9 @@ namespace ProyectoQuinielas.Controllers
         [HttpPost]
         public IActionResult Register(string username, string email, string password, string password2)
         {
-            QuinielasContext context = new QuinielasContext();
             if (!password.Equals(password2))
                 return RedirectToAction("register");
-            var usernameExists = context.Users
+            var usernameExists = _context.Users
                 .Where(u => u.Username == username && (bool)u.Active!)
                 .FirstOrDefault();
             if (usernameExists != null)
@@ -82,7 +82,7 @@ namespace ProyectoQuinielas.Controllers
                 ViewBag.AlertMessage = "El nombre de usuario ya existe";
                 return View();
             }
-            var emailExists = context.Users
+            var emailExists = _context.Users
                 .Where(u => u.Email == email && (bool)u.Active!)
                 .FirstOrDefault();
             if (emailExists != null)
@@ -93,8 +93,8 @@ namespace ProyectoQuinielas.Controllers
                 return View();
             }
             User user = new User { Username = username, Email = email, Password = Encryption.EncryptPassword(password) };
-            context.Users.Add(user);
-            context.SaveChanges();
+            _context.Users.Add(user);
+            _context.SaveChanges();
             _logger.LogInformation($"{user.Username} registered succesfully!");
             HttpContext.Session.SetInt32("userid", user.Id);
             return RedirectToAction("dashboard");
@@ -115,8 +115,7 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
             return View();
         }

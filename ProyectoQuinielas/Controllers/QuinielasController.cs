@@ -11,9 +11,11 @@ namespace ProyectoQuinielas.Controllers
     public class QuinielasController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly QuinielasContext _context;
 
-        public QuinielasController(ILogger<HomeController> logger)
+        public QuinielasController(ILogger<HomeController> logger, QuinielasContext context)
         {
+            _context = context;
             _logger = logger;
         }
 
@@ -23,10 +25,9 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
             return View(pools);
         }
 
@@ -36,10 +37,9 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.AdminId == userid).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.AdminId == userid).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
             return View(pools);
         }
 
@@ -49,10 +49,9 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
+            var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            IEnumerable pools = context.Pools.Include(p => p.Users).Where(p => p.Users.Count < p.UsersLimit && !p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.Users.Count < p.UsersLimit && !p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
             return View(pools);
         }
 
@@ -62,15 +61,14 @@ namespace ProyectoQuinielas.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            QuinielasContext context = new QuinielasContext();
-            var user = context.Users.Find(userid);
-            var pool = context.Pools.Find(id);
+            var user = _context.Users.Find(userid);
+            var pool = _context.Pools.Find(id);
             if (pool!.Private)
             {
                 if (pool!.Password!.Equals(password))
                 {
                     pool!.Users.Add(user!);
-                    context.SaveChanges();
+                    _context.SaveChanges();
                     _logger.LogInformation($"User Id: {user!.Id} joined Pool Id: {pool.Id}");
                     return RedirectToAction("");
                 }
@@ -80,7 +78,7 @@ namespace ProyectoQuinielas.Controllers
             else
             {
                 pool!.Users.Add(user!);
-                context.SaveChanges();
+                _context.SaveChanges();
                 _logger.LogInformation($"User Id: {user!.Id} joined Pool Id: {pool.Id}");
             }
             return RedirectToAction("");
@@ -109,9 +107,8 @@ namespace ProyectoQuinielas.Controllers
                 if (string.IsNullOrEmpty(pool.Password))
                     return RedirectToAction("create");
             }
-            QuinielasContext context = new QuinielasContext();
-            context.Pools.Add(pool);
-            context.SaveChanges();
+            _context.Pools.Add(pool);
+            _context.SaveChanges();
             _logger.LogInformation($"Pool Id: {pool.Id} created");
             return RedirectToAction("mine");
         }
