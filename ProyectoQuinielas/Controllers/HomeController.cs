@@ -72,11 +72,26 @@ namespace ProyectoQuinielas.Controllers
             QuinielasContext context = new QuinielasContext();
             if (!password.Equals(password2))
                 return RedirectToAction("register");
-            var userExists = context.Users
-                .Where(u => u.Username == username || u.Email == email)
+            var usernameExists = context.Users
+                .Where(u => u.Username == username && (bool)u.Active!)
                 .FirstOrDefault();
-            if (userExists != null)
-                return RedirectToAction("register");
+            if (usernameExists != null)
+            {
+                ViewBag.Alert = "Error al registrar";
+                ViewBag.AlertIcon = "error";
+                ViewBag.AlertMessage = "El nombre de usuario ya existe";
+                return View();
+            }
+            var emailExists = context.Users
+                .Where(u => u.Email == email && (bool)u.Active!)
+                .FirstOrDefault();
+            if (emailExists != null)
+            {
+                ViewBag.Alert = "Error al registrar";
+                ViewBag.AlertIcon = "error";
+                ViewBag.AlertMessage = "El correo ya existe";
+                return View();
+            }
             User user = new User { Username = username, Email = email, Password = Encryption.EncryptPassword(password) };
             context.Users.Add(user);
             context.SaveChanges();
