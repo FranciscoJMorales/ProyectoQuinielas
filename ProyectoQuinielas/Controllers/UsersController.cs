@@ -107,7 +107,7 @@ namespace ProyectoQuinielas.Controllers
             _context.SaveChanges();
             _logger.LogInformation($"User {user.Username} deleted");
             HttpContext.Session.Clear();
-            return RedirectToAction("login", "Home");
+            return new JsonResult(true);
         }
     }
 }

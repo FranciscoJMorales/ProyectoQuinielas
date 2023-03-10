@@ -69,9 +69,7 @@
                                     <a class="btn btn-warning" href="change_password">Cambiar contraseña</a>
                                 </div>
                                 <div class="col-md-4">
-                                    <form asp-action="Delete" asp-route-id="@Model?.Id">
-                                        <button class="btn btn-danger" type="submit">Eliminar usuario</button>
-                                    </form>
+                                    <button class="btn btn-danger" onclick="confirmDelete()">Eliminar usuario</button>
                                 </div>
                             </div>
                         </div>
@@ -87,3 +85,18 @@
 <div>
     <a href="/dashboard">Volver al inicio</a>
 </div>
+
+@section Scripts{
+    <script>
+        function confirmDelete() {
+            showAlert('Confirmar', '¿Estás seguro? Tus datos serán eliminados permanentemente', 'warning', true, 'No', 'Sí').then(confirmed => {
+                if (confirmed) {
+                    const URL = '/users/delete/@Model?.Id';
+                    $.post(URL, function (data) {
+                        if (data) window.location.replace('/login');
+                    });
+                }
+            });
+        }
+    </script>
+}

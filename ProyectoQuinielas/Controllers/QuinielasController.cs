@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoQuinielas.Models;
 using ProyectoQuinielas.Models.DTO;
-using ProyectoQuinielas.Queries;
-using ProyectoQuinielas.Utils;
 using System.Collections;
 
 namespace ProyectoQuinielas.Controllers
