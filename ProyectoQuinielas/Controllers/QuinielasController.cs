@@ -129,5 +129,18 @@ namespace ProyectoQuinielas.Controllers
             _logger.LogInformation($"User {user.Username} left pool {pool.Name}");
             return new JsonResult(true);
         }
+
+        [HttpGet]
+        public IActionResult Quiniela(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var user = _context.Users.Find(userid);
+            ViewBag.User = user!.Username;
+            var quiniela = _context.Pools.Find(id);
+            return View(quiniela);
+        }
+
     }
 }
