@@ -1,16 +1,16 @@
-﻿@model ProyectoQuinielas.Models.Pool
+﻿@model ProyectoQuinielas.Models.DTO.QuinielaFull
 
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = Model.Nombre;
 }
 
 <div class="pagetitle">
-    <h1>Profile</h1>
+    <h1>Quiniela</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
             <li class="breadcrumb-item">Quinielas</li>
-            <li class="breadcrumb-item active">@Model.Name</li>
+            <li class="breadcrumb-item active">@Model.Nombre</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -36,9 +36,12 @@
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pool-games">Partidos</button>
                         </li>
 
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pool-admin">Administrar</button>
-                        </li>
+                        @if (Model.IsAdmin)
+                        {
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pool-admin">Administrar</button>
+                            </li>
+                        }
 
                     </ul>
                     <div class="tab-content pt-2">

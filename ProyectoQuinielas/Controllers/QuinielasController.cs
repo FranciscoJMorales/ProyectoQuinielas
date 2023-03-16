@@ -138,8 +138,33 @@ namespace ProyectoQuinielas.Controllers
                 return RedirectToAction("login", "Home");
             var user = _context.Users.Find(userid);
             ViewBag.User = user!.Username;
-            var quiniela = _context.Pools.Find(id);
-            return View(quiniela);
+            var poolInfo = _context.Pools.Find(id);
+            var pool = _context.Pools
+                .Include(p => p.Users)
+                .Where(p => p.Id == id)
+                .Select(p => new QuinielaFull {
+                    Id = p.Id,
+                    Participantes = p.Users.Count,
+                    Privada = p.Private,
+                    AdminId = p.AdminId,
+                    Administrador = p.Admin.Username,
+                    Users = p.Users.ToList(),
+                    Límite = p.UsersLimit,
+                    Nombre = p.Name
+                }).FirstOrDefault();
+            pool.UsersScore = _context.Users
+                .Include(u => u.Predictions)
+                .Include(u => u.PoolsNavigation)
+                .Where(u => u.PoolsNavigation.Contains(poolInfo))
+                .Select(u => new UserScore {
+                    Usuario = u.Username,
+                    Puntuación = (int)u.Predictions.Sum(p => p.Score)
+                }).ToList();
+            if (pool.AdminId == userid)
+                pool.IsAdmin = true;
+            if (pool.Users.Contains(user))
+                pool.IsParticipant = true;
+            return View(pool);
         }
 
     }
