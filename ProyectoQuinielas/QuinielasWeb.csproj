@@ -16,4 +16,8 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuinielasModel\QuinielasModel.csproj" />
+  </ItemGroup>
+
 </Project>
