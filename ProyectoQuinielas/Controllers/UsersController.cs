@@ -9,10 +9,10 @@ namespace QuinielasWeb.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<UsersController> _logger;
         private readonly QuinielasContext _context;
 
-        public UsersController(ILogger<HomeController> logger, QuinielasContext context)
+        public UsersController(ILogger<UsersController> logger, QuinielasContext context)
         {
             _context = context;
             _logger = logger;

@@ -1,6 +1,6 @@
 ﻿namespace QuinielasModel.DTO;
 
-public class QuinielaView
+public class QuinielaView : Result
 {
     public int Id { get; set; }
 

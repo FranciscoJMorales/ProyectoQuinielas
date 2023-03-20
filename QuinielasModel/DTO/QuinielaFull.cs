@@ -1,6 +1,6 @@
 ﻿namespace QuinielasModel.DTO;
 
-public class QuinielaFull
+public class QuinielaFull : Result
 {
     public int Id { get; set; }
 

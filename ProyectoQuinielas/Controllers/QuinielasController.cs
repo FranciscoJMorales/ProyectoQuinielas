@@ -8,10 +8,10 @@ namespace QuinielasWeb.Controllers
 {
     public class QuinielasController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<QuinielasController> _logger;
         private readonly QuinielasContext _context;
 
-        public QuinielasController(ILogger<HomeController> logger, QuinielasContext context)
+        public QuinielasController(ILogger<QuinielasController> logger, QuinielasContext context)
         {
             _context = context;
             _logger = logger;
@@ -151,7 +151,7 @@ namespace QuinielasWeb.Controllers
                     Users = p.Users.ToList(),
                     Límite = p.UsersLimit,
                     Nombre = p.Name
-                }).FirstOrDefault();
+                }).First();
             pool.UsersScore = _context.Users
                 .Include(u => u.Predictions)
                 .Include(u => u.PoolsNavigation)

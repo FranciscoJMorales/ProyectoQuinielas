@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuinielasWeb.Models;
+using QuinielasWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<QuinielasContext>(options =>
                     options.UseMySQL(connectionString: builder.Configuration.GetConnectionString("Default")!));
+
+builder.Services.AddSingleton<AuthService>();
 
 builder.Services.AddDistributedMemoryCache();
 

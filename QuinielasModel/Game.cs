@@ -1,6 +1,6 @@
 ﻿namespace QuinielasModel;
 
-public class Game
+public class Game : Result
 {
     public int Id { get; set; }
 
