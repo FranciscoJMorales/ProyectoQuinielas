@@ -11,6 +11,7 @@ builder.Services.AddDbContext<QuinielasContext>(options =>
                     options.UseMySQL(connectionString: builder.Configuration.GetConnectionString("Default")!));
 
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<UsersService>();
 
 builder.Services.AddDistributedMemoryCache();
 

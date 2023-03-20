@@ -4,18 +4,20 @@ using QuinielasWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using QuinielasWeb.Utils;
+using QuinielasWeb.Services;
+using QuinielasModel.DTO;
 
 namespace QuinielasWeb.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ILogger<UsersController> _logger;
-        private readonly QuinielasContext _context;
+        private readonly UsersService _usersService;
 
-        public UsersController(ILogger<UsersController> logger, QuinielasContext context)
+        public UsersController(ILogger<UsersController> logger, UsersService usersService)
         {
-            _context = context;
             _logger = logger;
+            _usersService = usersService;
         }
 
         [HttpGet]
@@ -25,42 +27,42 @@ namespace QuinielasWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
+            var user = await _usersService.GetUser((int)userid);
+            ViewBag.User = HttpContext.Session.GetString("username");
             return View(user);
         }
 
         [HttpGet]
-        public IActionResult Update()
+        public async Task<IActionResult> Update()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
+            var user = await _usersService.GetUser((int)userid);
+            ViewBag.User = HttpContext.Session.GetString("username");
             return View(user);
         }
 
         [HttpPost]
-        public IActionResult Update(User user)
+        public async Task<IActionResult> Update(QuinielasModel.User user)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var userExists = _context.Users
-                .Where(u => (u.Username == user.Username || u.Email == user.Email) && u.Id != userid)
-                .FirstOrDefault();
-            if (userExists != null)
-                return RedirectToAction("update");
-            var currentUser = _context.Users.Find(userid);
-            currentUser!.Username = user.Username;
-            currentUser!.Email = user.Email;
-            _context.SaveChanges();
+            var result = await _usersService.Update(user);
+            if (result.HasError)
+            {
+                ViewBag.User = HttpContext.Session.GetString("username");
+                ViewBag.Alert = result.Alert!.Alert;
+                ViewBag.AlertIcon = result.Alert.AlertIcon;
+                ViewBag.AlertMessage = result.Alert.AlertMessage;
+                return View(user);
+            }
             return RedirectToAction("profile");
         }
 
@@ -71,43 +73,49 @@ namespace QuinielasWeb.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
+            ViewBag.User = HttpContext.Session.GetString("username");
             return View();
         }
 
         [Route("/users/change_password")]
         [HttpPost]
-        public IActionResult ChangePassword(string old_password, string password, string password2)
+        public async Task<IActionResult> ChangePassword(string old_password, string password, string password2)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
+            ViewBag.User = HttpContext.Session.GetString("username");
             if (!password.Equals(password2))
-                return RedirectToAction("change_password");
-            var user = _context.Users.Find(userid);
-            if (Encryption.ComparePasswords(user!.Password, old_password))
             {
-                user.Password = Encryption.EncryptPassword(password);
-                _context.SaveChanges();
-                _logger.LogInformation($"{user.Username} updated password");
-                return RedirectToAction("profile");
+                ViewBag.Alert = "Error al actualizar contrasena";
+                ViewBag.AlertIcon = "error";
+                ViewBag.AlertMessage = "Las contrasenas no coinciden";
+                return View();
             }
-            return RedirectToAction("change_password");
+            var result = await _usersService.ChangePassword((int)userid, new UpdatePassword { OldPassword = old_password, NewPassword = password });
+            if (result.HasError)
+            {
+                ViewBag.Alert = result.Alert!.Alert;
+                ViewBag.AlertIcon = result.Alert.AlertIcon;
+                ViewBag.AlertMessage = result.Alert.AlertMessage;
+                return View();
+            }
+            ViewBag.Alert = "Actualizacion correcta";
+            ViewBag.AlertIcon = "success";
+            ViewBag.AlertMessage = "La contrasena se ha actualizado correctamente";
+            ViewBag.RedirectUrl = "/users/profile";
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(id);
-            user!.Active = false;
-            _context.SaveChanges();
-            _logger.LogInformation($"User {user.Username} deleted");
+            var result = await _usersService.DeleteUser(id);
             HttpContext.Session.Clear();
-            return new JsonResult(true);
+            return new JsonResult(!result.HasError);
         }
     }
 }

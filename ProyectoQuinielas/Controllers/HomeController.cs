@@ -80,7 +80,11 @@ namespace QuinielasWeb.Controllers
             }
             HttpContext.Session.SetInt32("userid", user.Id);
             HttpContext.Session.SetString("username", user.Username);
-            return RedirectToAction("dashboard");
+            ViewBag.Alert = $"¡Bienvenido {user.Username}!";
+            ViewBag.AlertIcon = "success";
+            ViewBag.AlertMessage = "Te has registrado correctamente";
+            ViewBag.RedirectUrl = "/dashboard";
+            return View();
         }
 
         [Route("/logout")]

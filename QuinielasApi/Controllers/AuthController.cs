@@ -12,10 +12,10 @@ namespace QuinielasApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<AuthController> _logger;
         private readonly QuinielasContext _context;
 
-        public AuthController(ILogger<WeatherForecastController> logger, QuinielasContext context)
+        public AuthController(ILogger<AuthController> logger, QuinielasContext context)
         {
             _context = context;
             _logger = logger;

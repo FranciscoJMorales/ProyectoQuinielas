@@ -67,7 +67,6 @@
 
     @if (ViewBag.Alert != null)
     {
-        if (ViewBag.RedirectUrl == null) ViewBag.RedirectUrl = "";
         <script>
             showAlert('@ViewBag.Alert', '@ViewBag.AlertMessage', '@ViewBag.AlertIcon', false, '', 'Aceptar').then(confirmed => {
                 let url = '@ViewBag.RedirectUrl'
