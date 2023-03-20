@@ -11,12 +11,10 @@ namespace QuinielasWeb.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly QuinielasContext _context;
         private readonly AuthService _authService;
 
-        public HomeController(ILogger<HomeController> logger, QuinielasContext context, AuthService authService)
+        public HomeController(ILogger<HomeController> logger, AuthService authService)
         {
-            _context = context;
             _logger = logger;
             _authService = authService;
         }
@@ -44,7 +42,7 @@ namespace QuinielasWeb.Controllers
             var user = await _authService.Login(new UserAuth { UserEmail = userid, Password = password });
             if (user.HasError)
             {
-                ViewBag.Alert = user.Alert.Alert;
+                ViewBag.Alert = user.Alert!.Alert;
                 ViewBag.AlertIcon = user.Alert.AlertIcon;
                 ViewBag.AlertMessage = user.Alert.AlertMessage;
                 return View();
@@ -52,26 +50,6 @@ namespace QuinielasWeb.Controllers
             HttpContext.Session.SetInt32("userid", user.Id);
             HttpContext.Session.SetString("username", user.Username);
             return RedirectToAction("dashboard");
-            //var user = _context.Users
-            //    .Where(u => (u.Username == userid || u.Email == userid) && (bool)u.Active!)
-            //    .FirstOrDefault();
-            //if (user == null)
-            //{
-            //    ViewBag.Alert = "Login incorrecto";
-            //    ViewBag.AlertIcon = "error";
-            //    ViewBag.AlertMessage = "El usuario no existe";
-            //    return View();
-            //}
-            //if (Encryption.ComparePasswords(user.Password, password))
-            //{
-            //    _logger.LogInformation($"{user.Username} logged in succesfully!");
-            //    HttpContext.Session.SetInt32("userid", user.Id);
-            //    return RedirectToAction("dashboard");
-            //}
-            //ViewBag.Alert = "Login incorrecto";
-            //ViewBag.AlertIcon = "error";
-            //ViewBag.AlertMessage = "La contrasena no coincide";
-            //return View();
         }
 
         [Route("/register")]
@@ -83,35 +61,25 @@ namespace QuinielasWeb.Controllers
 
         [Route("/register")]
         [HttpPost]
-        public IActionResult Register(string username, string email, string password, string password2)
+        public async Task<IActionResult> Register(string username, string email, string password, string password2)
         {
             if (!password.Equals(password2))
-                return RedirectToAction("register");
-            var usernameExists = _context.Users
-                .Where(u => u.Username == username && (bool)u.Active!)
-                .FirstOrDefault();
-            if (usernameExists != null)
             {
                 ViewBag.Alert = "Error al registrar";
                 ViewBag.AlertIcon = "error";
-                ViewBag.AlertMessage = "El nombre de usuario ya existe";
+                ViewBag.AlertMessage = "Las contrasenas no coinciden";
                 return View();
             }
-            var emailExists = _context.Users
-                .Where(u => u.Email == email && (bool)u.Active!)
-                .FirstOrDefault();
-            if (emailExists != null)
+            var user = await _authService.Register(new QuinielasModel.User { Username = username, Email = email, Password = password });
+            if (user.HasError)
             {
-                ViewBag.Alert = "Error al registrar";
-                ViewBag.AlertIcon = "error";
-                ViewBag.AlertMessage = "El correo ya existe";
+                ViewBag.Alert = user.Alert!.Alert;
+                ViewBag.AlertIcon = user.Alert.AlertIcon;
+                ViewBag.AlertMessage = user.Alert.AlertMessage;
                 return View();
             }
-            User user = new User { Username = username, Email = email, Password = Encryption.EncryptPassword(password) };
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            _logger.LogInformation($"{user.Username} registered succesfully!");
             HttpContext.Session.SetInt32("userid", user.Id);
+            HttpContext.Session.SetString("username", user.Username);
             return RedirectToAction("dashboard");
         }
 
@@ -130,8 +98,7 @@ namespace QuinielasWeb.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
+            ViewBag.User = HttpContext.Session.GetString("username");
             return View();
         }
 
