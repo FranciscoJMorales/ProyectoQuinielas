@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace ProyectoQuinielas.Models;
+namespace QuinielasWeb.Models;
 
 public partial class QuinielasContext : DbContext
 {

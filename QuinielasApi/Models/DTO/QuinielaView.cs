@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProyectoQuinielas.Models.DTO;
+﻿namespace QuinielasApi.Models.DTO;
 
 public class QuinielaView
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ProyectoQuinielas.Controllers
+namespace QuinielasWeb.Controllers
 {
     public class AboutController : Controller
     {

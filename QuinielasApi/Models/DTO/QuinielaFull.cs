@@ -1,4 +1,4 @@
-﻿namespace ProyectoQuinielas.Models.DTO
+﻿namespace QuinielasApi.Models.DTO
 {
     public class QuinielaFull
     {

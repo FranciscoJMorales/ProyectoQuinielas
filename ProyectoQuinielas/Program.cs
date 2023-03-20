@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProyectoQuinielas.Models;
+using QuinielasWeb.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

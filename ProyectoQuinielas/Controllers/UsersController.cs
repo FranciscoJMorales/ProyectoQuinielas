@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoQuinielas.Models.DTO;
-using ProyectoQuinielas.Models;
+using QuinielasWeb.Models.DTO;
+using QuinielasWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
-using ProyectoQuinielas.Utils;
+using QuinielasWeb.Utils;
 
-namespace ProyectoQuinielas.Controllers
+namespace QuinielasWeb.Controllers
 {
     public class UsersController : Controller
     {

@@ -1,4 +1,4 @@
-﻿namespace ProyectoQuinielas.Models.DTO
+﻿namespace QuinielasWeb.Models.DTO
 {
     public class QuinielaFull
     {

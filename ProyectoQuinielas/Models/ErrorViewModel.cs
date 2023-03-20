@@ -1,4 +1,4 @@
-namespace ProyectoQuinielas.Models
+namespace QuinielasWeb.Models
 {
     public class ErrorViewModel
     {

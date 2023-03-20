@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace ProyectoQuinielas.Utils
+namespace QuinielasWeb.Utils
 {
     public static class Encryption
     {

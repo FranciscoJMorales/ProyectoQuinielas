@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoQuinielas.Models;
-using ProyectoQuinielas.Models.DTO;
+using QuinielasWeb.Models;
+using QuinielasWeb.Models.DTO;
 using System.Collections;
 
-namespace ProyectoQuinielas.Controllers
+namespace QuinielasWeb.Controllers
 {
     public class QuinielasController : Controller
     {

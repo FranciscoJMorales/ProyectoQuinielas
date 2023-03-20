@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoQuinielas.Models;
-using ProyectoQuinielas.Utils;
+using QuinielasWeb.Models;
+using QuinielasWeb.Utils;
 using System.Diagnostics;
 using System.Xml.Linq;
 
-namespace ProyectoQuinielas.Controllers
+namespace QuinielasWeb.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ProyectoQuinielas.Models;
+namespace QuinielasWeb.Models;
 
 public partial class Prediction
 {
