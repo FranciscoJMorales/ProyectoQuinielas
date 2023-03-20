@@ -15,7 +15,7 @@ namespace QuinielasWeb.Services
         public async Task<User> GetUser(int id)
         {
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.GetAsync(url + "login/" + id);
+            var response = await _client.GetAsync(url + id);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
