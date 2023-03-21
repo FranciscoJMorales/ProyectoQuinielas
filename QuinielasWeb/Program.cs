@@ -12,6 +12,7 @@ builder.Services.AddDbContext<QuinielasContext>(options =>
 
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<UsersService>();
+builder.Services.AddSingleton<PoolsService>();
 
 builder.Services.AddDistributedMemoryCache();
 

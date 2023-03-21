@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuinielasWeb.Models;
 using QuinielasWeb.Models.DTO;
+using QuinielasWeb.Services;
 using System.Collections;
 
 namespace QuinielasWeb.Controllers
@@ -9,47 +10,44 @@ namespace QuinielasWeb.Controllers
     public class QuinielasController : Controller
     {
         private readonly ILogger<QuinielasController> _logger;
-        private readonly QuinielasContext _context;
+        private readonly PoolsService _poolsService;
 
-        public QuinielasController(ILogger<QuinielasController> logger, QuinielasContext context)
+        public QuinielasController(ILogger<QuinielasController> logger, PoolsService poolsService)
         {
-            _context = context;
             _logger = logger;
+            _poolsService = poolsService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
-            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            ViewBag.User = HttpContext.Session.GetString("username");
+            var pools = await _poolsService.GetOtherPools((int)userid);
             return View(pools);
         }
 
         [HttpGet]
-        public IActionResult Mine()
+        public async Task<IActionResult> Mine()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
-            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.AdminId == userid).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            ViewBag.User = HttpContext.Session.GetString("username");
+            var pools = await _poolsService.GetMyPools((int)userid);
             return View(pools);
         }
 
         [HttpGet]
-        public IActionResult Join()
+        public async Task<IActionResult> Join()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var user = _context.Users.Find(userid);
-            ViewBag.User = user!.Username;
-            IEnumerable pools = _context.Pools.Include(p => p.Users).Where(p => p.Users.Count < p.UsersLimit && !p.Users.Contains(user)).Select(p => new QuinielaView { Id = p.Id, Participantes = p.Users.Count, Privada = p.Private, Administrador = p.Admin.Username, Límite = p.UsersLimit, Nombre = p.Name });
+            ViewBag.User = HttpContext.Session.GetString("username");
+            var pools = await _poolsService.GetNewPools((int)userid);
             return View(pools);
         }
 

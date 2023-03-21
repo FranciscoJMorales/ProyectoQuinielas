@@ -15,4 +15,18 @@ public static class Mapper
             Username = user.Username
         };
     }
+
+    public static Pool ToDbModel(QuinielasModel.Pool pool)
+    {
+        return new Pool
+        {
+            Id = pool.Id,
+            Active = pool.Active,
+            AdminId = pool.AdminId,
+            Name = pool.Name,
+            Password = pool.Password,
+            Private = pool.Private,
+            UsersLimit = pool.UsersLimit
+        };
+    }
 }
