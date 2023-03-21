@@ -3,21 +3,18 @@ using Newtonsoft.Json;
 using System.Text;
 using QuinielasModel.DTO;
 using QuinielasModel;
+using Microsoft.AspNetCore.Authentication;
 
 namespace QuinielasWeb.Services
 {
-    public class AuthService
+    public class AuthService : ApiService
     {
-        private readonly HttpClient _client = new();
-        private readonly HttpClientHandler _clientHandler = new();
-        private readonly string url = "https://localhost:7242/auth/";
-
         public async Task<UserId> Login(UserAuth userCreds)
         {
             var json_ = JsonConvert.SerializeObject(userCreds);
             var content = new StringContent(json_, Encoding.UTF8, "application/json");
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.PostAsync(url + "login", content);
+            var response = await _client.PostAsync(url + "auth/login", content);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<UserId>(await response.Content.ReadAsStringAsync());
@@ -33,7 +30,7 @@ namespace QuinielasWeb.Services
             var json_ = JsonConvert.SerializeObject(userCreds);
             var content = new StringContent(json_, Encoding.UTF8, "application/json");
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.PostAsync(url + "register", content);
+            var response = await _client.PostAsync(url + "auth/register", content);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<UserId>(await response.Content.ReadAsStringAsync());

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuinielasWeb", "ProyectoQuinielas\QuinielasWeb.csproj", "{88EEC6B6-6864-4479-9124-553C296EA586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuinielasWeb", "QuinielasWeb\QuinielasWeb.csproj", "{88EEC6B6-6864-4479-9124-553C296EA586}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuinielasModel", "QuinielasModel\QuinielasModel.csproj", "{CA036838-BAB3-48FD-82B6-66BFE3582DB5}"
 EndProject

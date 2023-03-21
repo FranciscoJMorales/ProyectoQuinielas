@@ -31,7 +31,7 @@ namespace QuinielasApi.Controllers
 
         [Route("update/{id}")]
         [HttpPost]
-        public async Task<Result> UpdateUser(int id, QuinielasModel.User user)
+        public async Task<Result> UpdateUser(int id, UpdateUser user)
         {
             var usernameExists = await _context.Users
                 .Where(u => u.Username == user.Username && u.Id != id && (bool)u.Active!)

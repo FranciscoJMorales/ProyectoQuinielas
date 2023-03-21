@@ -45,15 +45,16 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             var user = await _usersService.GetUser((int)userid);
             ViewBag.User = HttpContext.Session.GetString("username");
-            return View(user);
+            return View(new UpdateUser { Id = user.Id, Username = user.Username, Email = user.Email });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(QuinielasModel.User user)
+        public async Task<IActionResult> Update(UpdateUser user)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
+            user.Id = (int)userid;
             var result = await _usersService.Update(user);
             if (result.HasError)
             {

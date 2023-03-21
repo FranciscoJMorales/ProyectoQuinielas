@@ -6,16 +6,12 @@ using QuinielasModel;
 
 namespace QuinielasWeb.Services
 {
-    public class UsersService
+    public class UsersService : ApiService
     {
-        private readonly HttpClient _client = new();
-        private readonly HttpClientHandler _clientHandler = new();
-        private readonly string url = "https://localhost:7242/users/";
-
         public async Task<User> GetUser(int id)
         {
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.GetAsync(url + id);
+            var response = await _client.GetAsync(url + "users/" + id);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
@@ -26,12 +22,12 @@ namespace QuinielasWeb.Services
             }
         }
 
-        public async Task<Result> Update(User user)
+        public async Task<Result> Update(UpdateUser user)
         {
             var json_ = JsonConvert.SerializeObject(user);
             var content = new StringContent(json_, Encoding.UTF8, "application/json");
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.PostAsync(url + "update/" + user.Id, content);
+            var response = await _client.PostAsync(url + "users/update/" + user.Id, content);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<Result>(await response.Content.ReadAsStringAsync());
@@ -47,7 +43,7 @@ namespace QuinielasWeb.Services
             var json_ = JsonConvert.SerializeObject(password);
             var content = new StringContent(json_, Encoding.UTF8, "application/json");
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.PostAsync(url + "password/" + id, content);
+            var response = await _client.PostAsync(url + "users/password/" + id, content);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<Result>(await response.Content.ReadAsStringAsync());
@@ -61,7 +57,7 @@ namespace QuinielasWeb.Services
         public async Task<Result> DeleteUser(int id)
         {
             _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            var response = await _client.PostAsync(url + "delete/" + id, null);
+            var response = await _client.PostAsync(url + "users/delete/" + id, null);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonConvert.DeserializeObject<Result>(await response.Content.ReadAsStringAsync());
