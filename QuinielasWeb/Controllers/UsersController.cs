@@ -56,15 +56,14 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             user.Id = (int)userid;
             var result = await _usersService.Update(user);
-            if (result.HasError)
-            {
-                ViewBag.User = HttpContext.Session.GetString("username");
-                ViewBag.Alert = result.Alert!.Alert;
-                ViewBag.AlertIcon = result.Alert.AlertIcon;
-                ViewBag.AlertMessage = result.Alert.AlertMessage;
-                return View(user);
-            }
-            return RedirectToAction("profile");
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            if (!result.HasError)
+                HttpContext.Session.SetString("username", user.Username);
+            return View(user);
         }
 
         [Route("/users/change_password")]
@@ -94,17 +93,10 @@ namespace QuinielasWeb.Controllers
                 return View();
             }
             var result = await _usersService.ChangePassword((int)userid, new UpdatePassword { OldPassword = old_password, NewPassword = password });
-            if (result.HasError)
-            {
-                ViewBag.Alert = result.Alert!.Alert;
-                ViewBag.AlertIcon = result.Alert.AlertIcon;
-                ViewBag.AlertMessage = result.Alert.AlertMessage;
-                return View();
-            }
-            ViewBag.Alert = "Actualizacion correcta";
-            ViewBag.AlertIcon = "success";
-            ViewBag.AlertMessage = "La contrasena se ha actualizado correctamente";
-            ViewBag.RedirectUrl = "/users/profile";
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
             return View();
         }
 
