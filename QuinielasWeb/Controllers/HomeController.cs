@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuinielasWeb.Models;
 using QuinielasWeb.Services;
-using QuinielasWeb.Utils;
 using System.Diagnostics;
-using System.Xml.Linq;
 using QuinielasModel.DTO;
 
 namespace QuinielasWeb.Controllers

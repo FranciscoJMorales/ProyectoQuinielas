@@ -1,14 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using QuinielasWeb.Models;
 using QuinielasWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<QuinielasContext>(options =>
-                    options.UseMySQL(connectionString: builder.Configuration.GetConnectionString("Default")!));
 
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<UsersService>();

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using QuinielasWeb.Models;
-using QuinielasWeb.Models.DTO;
 using QuinielasWeb.Services;
-using System.Collections;
+using QuinielasModel;
+using QuinielasModel.DTO;
 
 namespace QuinielasWeb.Controllers
 {
@@ -58,7 +56,7 @@ namespace QuinielasWeb.Controllers
             if (userid == null)
                 return RedirectToAction("login", "Home");
             var pools = await _poolsService.GetNewPools((int)userid);
-            var result = await _poolsService.Join(new QuinielasModel.DTO.UserPool { PoolId = id, UserId = (int)userid!, Password = password });
+            var result = await _poolsService.Join(new UserPool { PoolId = id, UserId = (int)userid!, Password = password });
             ViewBag.User = HttpContext.Session.GetString("username");
             ViewBag.Alert = result.Alert!.Alert;
             ViewBag.AlertIcon = result.Alert.AlertIcon;
@@ -78,7 +76,7 @@ namespace QuinielasWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(QuinielasModel.Pool pool)
+        public async Task<IActionResult> Create(Pool pool)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
@@ -100,7 +98,7 @@ namespace QuinielasWeb.Controllers
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
-            var result = await _poolsService.Leave(new QuinielasModel.DTO.UserPool { PoolId = id, UserId = (int)userid! });
+            var result = await _poolsService.Leave(new UserPool { PoolId = id, UserId = (int)userid! });
             return new JsonResult(result.Alert!);
         }
 

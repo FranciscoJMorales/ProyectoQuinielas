@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QuinielasWeb.Models.DTO;
-using QuinielasWeb.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using QuinielasWeb.Utils;
 using QuinielasWeb.Services;
 using QuinielasModel.DTO;
 
