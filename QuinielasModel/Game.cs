@@ -17,8 +17,4 @@ public class Game : Result
     public DateTime GameDate { get; set; }
 
     public bool? Active { get; set; }
-
-    public Pool Pool { get; set; } = null!;
-
-    public List<Prediction> Predictions { get; } = new List<Prediction>();
 }

@@ -78,7 +78,11 @@
                 if (confirmed) {
                     const URL = `/quinielas/leave/${id}`;
                     $.post(URL, function(data) {
-                        if (data) window.location.reload();
+                        if (data) {
+                            showAlert(data.Alert, data.AlertMessage, data.AlertIcon, false, '', 'Aceptar').then(confirmed => {
+                                window.location.reload();
+                            });
+                        }
                     });
                 }
             });

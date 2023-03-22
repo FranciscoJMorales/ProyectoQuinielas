@@ -26,7 +26,7 @@ namespace QuinielasApi.Controllers
         public async Task<QuinielaFull> GetPool(int id)
         {
             var poolInfo = await _context.Pools.FindAsync(id);
-            var pool = _context.Pools
+            var pool = await _context.Pools
                 .Include(p => p.Users)
                 .Where(p => p.Id == id)
                 .Select(p => new QuinielaFull
@@ -36,11 +36,20 @@ namespace QuinielasApi.Controllers
                     Privada = p.Private,
                     AdminId = p.AdminId,
                     Administrador = p.Admin.Username,
-                    Users = p.Users.Cast<QuinielasModel.User>().ToList(),
                     Límite = p.UsersLimit,
                     Nombre = p.Name
-                }).First();
-            pool.UsersScore = _context.Users
+                }).FirstAsync();
+            pool.Users = await _context.Users
+                .Where(u => u.PoolsNavigation.Contains(poolInfo!))
+                .Select(u => new QuinielasModel.User
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    Email = u.Email,
+                    Password = u.Password,
+                    Active = u.Active
+                }).ToListAsync();
+            pool.UsersScore = await _context.Users
                 .Include(u => u.Predictions)
                 .Include(u => u.PoolsNavigation)
                 .Where(u => u.PoolsNavigation.Contains(poolInfo!))
@@ -48,7 +57,7 @@ namespace QuinielasApi.Controllers
                 {
                     Usuario = u.Username,
                     Puntuación = (int)u.Predictions.Sum(p => p.Score)!
-                }).ToList();
+                }).ToListAsync();
             return pool;
         }
 
@@ -133,7 +142,8 @@ namespace QuinielasApi.Controllers
                     };
                 }
             }
-            await _context.Pools.AddAsync(Mapper.ToDbModel(pool));
+            var poolModel = Mapper.ToDbModel(pool);
+            await _context.Pools.AddAsync(poolModel);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Pool {pool.Name} created");
             return new Result
@@ -143,7 +153,7 @@ namespace QuinielasApi.Controllers
                     Alert = "Quiniela creada",
                     AlertIcon = "success",
                     AlertMessage = $"Has creado la quiniela {pool.Name} correctamente",
-                    RedirectUrl = $"/quinielas/quiniela/{pool.Id}"
+                    RedirectUrl = $"/quinielas/quiniela/{poolModel.Id}"
                 }
             };
         }

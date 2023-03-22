@@ -13,8 +13,4 @@ public class Prediction : Result
     public int? Score { get; set; }
 
     public bool? Active { get; set; }
-
-    public Game Game { get; set; } = null!;
-
-    public User User { get; set; } = null!;
 }

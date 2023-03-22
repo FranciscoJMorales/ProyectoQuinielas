@@ -25,10 +25,4 @@ public class Pool : Result
     public int UsersLimit { get; set; }
 
     public bool? Active { get; set; }
-
-    public virtual User Admin { get; set; } = null!;
-
-    public List<Game> Games { get; } = new List<Game>();
-
-    public List<User> Users { get; } = new List<User>();
 }

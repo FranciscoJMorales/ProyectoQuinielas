@@ -20,10 +20,4 @@ public class User : Result
     public string Password { get; set; } = null!;
 
     public bool? Active { get; set; }
-
-    public List<Pool> Pools { get; } = new List<Pool>();
-
-    public List<Prediction> Predictions { get; } = new List<Prediction>();
-
-    public List<Pool> PoolsNavigation { get; } = new List<Pool>();
 }
