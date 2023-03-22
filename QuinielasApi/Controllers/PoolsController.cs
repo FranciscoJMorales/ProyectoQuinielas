@@ -209,7 +209,7 @@ namespace QuinielasApi.Controllers
                 Alert = new AlertInfo
                 {
                     Alert = "Operación exitosa",
-                    AlertIcon = "success",
+                    AlertIcon = "info",
                     AlertMessage = $"Has abandonado la quiniela {pool.Name} correctamente",
                     RedirectUrl = $"/quinielas"
                 }

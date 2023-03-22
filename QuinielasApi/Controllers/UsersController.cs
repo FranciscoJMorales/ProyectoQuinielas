@@ -123,7 +123,16 @@ namespace QuinielasApi.Controllers
             user!.Active = false;
             await _context.SaveChangesAsync();
             _logger.LogInformation($"User {user.Username} deleted");
-            return new Result();
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Lamentamos que te vayas",
+                    AlertIcon = "info",
+                    AlertMessage = "Todos tus datos se han eliminado. Esperamos que vuelvas pronto!",
+                    RedirectUrl = "/"
+                }
+            };
         }
     }
 }

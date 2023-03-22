@@ -93,7 +93,11 @@
                 if (confirmed) {
                     const URL = '/users/delete/@Model?.Id';
                     $.post(URL, function (data) {
-                        if (data) window.location.replace('/login');
+                        if (data) {
+                            showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                                window.location.replace(data.redirectUrl);
+                            });
+                        }
                     });
                 }
             });
