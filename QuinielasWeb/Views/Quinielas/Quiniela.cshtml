@@ -47,7 +47,7 @@
                     <div class="tab-content pt-2">
 
                         <!-- Dashboard -->
-                        <div class="tab-pane fade show active profile-overview" id="pool-dashboard">
+                        <div class="tab-pane fade show active" id="pool-dashboard">
                             <h5 class="card-title">@Model.Nombre</h5>
                             <h6 class="card-subtitle mb-3">¡Bienvenido!</h6>
 
@@ -116,7 +116,7 @@
                         <!-- End Dashboard -->
 
                         <!-- Positions -->
-                        <div class="tab-pane fade profile-edit pt-3" id="pool-positions">
+                        <div class="tab-pane fade" id="pool-positions">
                             <h5 class="card-title">Posiciones de @Model.Nombre</h5>
 
                             <!-- Positions Table -->
@@ -132,13 +132,18 @@
                                     @foreach (var item in Model.UsersScore!)
                                     {
                                         string background = "";
-                                        if (item.Posición == 1)
-                                            background = "class=\"table-success\"";
+                                        string bold = "";
+                                        if (item.Posición == 1 && item.Puntuación > 0)
+                                            background = "table-success";
+                                        else
+                                            background = "table-light";
+                                        if (item.Usuario.Equals(ViewBag.User))
+                                            bold = "fw-bold";
 
-                                        <tr @background>
+                                        <tr class="@background">
                                             <th scope="row">@item.Posición</th>
-                                            <td>@item.Usuario</td>
-                                            <td>@item.Puntuación</td>
+                                            <td class="@bold">@item.Usuario</td>
+                                            <td class="@bold">@item.Puntuación</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -149,7 +154,7 @@
                         <!-- End Positions -->
 
                         <!-- Games -->
-                        <div class="tab-pane fade pt-3" id="pool-games">
+                        <div class="tab-pane fade" id="pool-games">
                             <h5 class="card-title">Partidos de @Model.Nombre</h5>
                             <!-- Games Table -->
                             <table class="table table-hover">
@@ -180,7 +185,7 @@
                         {
                             <!-- Admin -->
 
-                            <div class="tab-pane fade pt-3" id="pool-admin">
+                            <div class="tab-pane fade" id="pool-admin">
                                 <h5 class="card-title">¡Bienvenido al menú de administrador, @(ViewBag.User)!</h5>
                             </div>
                             <!-- End Admin -->
