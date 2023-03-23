@@ -13,7 +13,8 @@ public class ApiService
     {
         _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
         var response = await _client.GetAsync(path);
-        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        int statusCode = (int)response.StatusCode;
+        if (statusCode >= 200 && statusCode < 300)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
@@ -29,7 +30,8 @@ public class ApiService
         var content = new StringContent(json_, Encoding.UTF8, "application/json");
         _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
         var response = await _client.PostAsync(path, content);
-        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        int statusCode = (int)response.StatusCode;
+        if (statusCode >= 200 && statusCode < 300)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }

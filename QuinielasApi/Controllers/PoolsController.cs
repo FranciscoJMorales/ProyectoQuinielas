@@ -23,42 +23,74 @@ namespace QuinielasApi.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<QuinielaFull> GetPool(int id)
+        public async Task<QuinielaFull?> GetPool(int id)
         {
             var poolInfo = await _context.Pools.FindAsync(id);
-            var pool = await _context.Pools
-                .Include(p => p.Users)
-                .Where(p => p.Id == id)
-                .Select(p => new QuinielaFull
+            if (poolInfo != null)
+            {
+                var pool = await _context.Pools
+                    .Include(p => p.Users)
+                    .Where(p => p.Id == id)
+                    .Select(p => new QuinielaFull
+                    {
+                        Id = p.Id,
+                        Participantes = p.Users.Count,
+                        Privada = p.Private,
+                        AdminId = p.AdminId,
+                        Administrador = p.Admin.Username,
+                        Límite = p.UsersLimit,
+                        Nombre = p.Name
+                    }).FirstAsync();
+                pool.Users = await _context.Users
+                    .Where(u => u.PoolsNavigation.Contains(poolInfo))
+                    .Select(u => new QuinielasModel.User
+                    {
+                        Id = u.Id,
+                        Username = u.Username,
+                        Email = u.Email,
+                        Password = u.Password,
+                        Active = u.Active
+                    }).ToListAsync();
+                pool.UsersScore = await _context.Users
+                    .Include(u => u.Predictions)
+                    .Include(u => u.PoolsNavigation)
+                    .Where(u => u.PoolsNavigation.Contains(poolInfo))
+                    .Select(u => new UserScore
+                    {
+                        Usuario = u.Username,
+                        Puntuación = (int)u.Predictions.Sum(p => p.Score)!
+                    }).OrderByDescending(s => s.Puntuación)
+                    .ToListAsync();
+                pool.Partidos = await _context.Games
+                    .Where(g => g.PoolId == poolInfo.Id)
+                    .Select(g => new QuinielasModel.Game
+                    {
+                        Id = g.Id,
+                        Active = g.Active,
+                        GameDate = g.GameDate,
+                        PoolId = g.PoolId,
+                        Team1 = g.Team1,
+                        Team1Score = g.Team1Score,
+                        Team2 = g.Team2,
+                        Team2Score = g.Team2Score
+                    }).ToListAsync();
+
+                //Assign positions
+                if (pool.UsersScore.Count > 0)
                 {
-                    Id = p.Id,
-                    Participantes = p.Users.Count,
-                    Privada = p.Private,
-                    AdminId = p.AdminId,
-                    Administrador = p.Admin.Username,
-                    Límite = p.UsersLimit,
-                    Nombre = p.Name
-                }).FirstAsync();
-            pool.Users = await _context.Users
-                .Where(u => u.PoolsNavigation.Contains(poolInfo!))
-                .Select(u => new QuinielasModel.User
-                {
-                    Id = u.Id,
-                    Username = u.Username,
-                    Email = u.Email,
-                    Password = u.Password,
-                    Active = u.Active
-                }).ToListAsync();
-            pool.UsersScore = await _context.Users
-                .Include(u => u.Predictions)
-                .Include(u => u.PoolsNavigation)
-                .Where(u => u.PoolsNavigation.Contains(poolInfo!))
-                .Select(u => new UserScore
-                {
-                    Usuario = u.Username,
-                    Puntuación = (int)u.Predictions.Sum(p => p.Score)!
-                }).ToListAsync();
-            return pool;
+                    pool.UsersScore[0].Posición = 1;
+                    //Allow ties
+                    for (int i = 1; i < pool.UsersScore.Count; i++)
+                    {
+                        if (pool.UsersScore[i].Puntuación < pool.UsersScore[i - 1].Puntuación)
+                            pool.UsersScore[i].Posición = i + 1;
+                        else
+                            pool.UsersScore[i].Posición = pool.UsersScore[i - 1].Posición;
+                    }
+                }
+                return pool;
+            }
+            return null;
         }
 
         [Route("other/{userid}")]

@@ -103,7 +103,7 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             var result = await _usersService.DeleteUser(id);
             HttpContext.Session.Clear();
-            return new JsonResult(!result.HasError);
+            return new JsonResult(result.Alert);
         }
     }
 }

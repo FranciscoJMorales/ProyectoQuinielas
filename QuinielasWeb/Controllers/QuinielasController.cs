@@ -110,11 +110,15 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             ViewBag.User = HttpContext.Session.GetString("username");
             var pool = await _poolsService.GetPool(id);
+            if (pool == null)
+                return NotFound();
             if (pool.AdminId == userid)
                 pool.IsAdmin = true;
             if (pool.Users!.Find(u => u.Id == userid) != null)
                 pool.IsParticipant = true;
-            return View(pool);
+            if (pool.IsAdmin || pool.IsParticipant)
+                return View(pool);
+            return Unauthorized();
         }
 
     }

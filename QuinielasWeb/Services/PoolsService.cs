@@ -10,9 +10,9 @@ namespace QuinielasWeb.Services
     {
         private string Url => baseUrl + "pools";
 
-        public async Task<QuinielaFull> GetPool(int id)
+        public async Task<QuinielaFull?> GetPool(int id)
         {
-            return await Get<QuinielaFull>($"{Url}/{id}");
+            return await Get<QuinielaFull?>($"{Url}/{id}");
         }
 
         public async Task<IEnumerable<QuinielaView>> GetOtherPools(int userid)
