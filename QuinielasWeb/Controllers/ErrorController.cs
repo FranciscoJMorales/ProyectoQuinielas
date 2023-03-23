@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuinielasWeb.Models;
 
 namespace QuinielasWeb.Controllers
 {
@@ -13,13 +14,28 @@ namespace QuinielasWeb.Controllers
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
+            var userid = HttpContext.Session.GetInt32("userid");
+            var error = new ErrorViewModel
+            {
+                StatusCode = statusCode,
+                IsLoggedIn = (userid != null)
+            };
             switch (statusCode)
             {
+                case 401:
+                    error.Status = "Unauthorized";
+                    error.Message = "No puedes ver la página que solicitas";
+                    break;
                 case 404:
-                    return View("NotFound");
+                    error.Status = "Not Found";
+                    error.Message = "La página que buscas no existe";
+                    break;
                 default:
-                    return View("Error");
+                    error.Status = "Error";
+                    error.Message = "Ha ocurrido un error inesperado";
+                    break;
             }
+            return View("Error", error);
         }
     }
 }
