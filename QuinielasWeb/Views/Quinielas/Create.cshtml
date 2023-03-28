@@ -4,17 +4,6 @@
     ViewData["Title"] = "Create";
 }
 
-<script>
-    function toggleStyleClass(checkbox) {
-        element = document.getElementById("passinput");
-        if (checkbox.checked) {
-            element.classList.remove('d-none');
-        } else {
-            element.classList.add('d-none');
-        }
-    }
-</script>
-
 <div class="pagetitle">
     <h1>Crear quiniela</h1>
     <nav>
@@ -66,10 +55,26 @@
 </section>
 
 <div>
-    <a asp-action="Mine">Volver a mis quinielas</a>
+    <a asp-action="Mine">Volver al administrador de quinielas</a>
 </div>
 
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            private = document.getElementById("Private");
+            toggleStyleClass(private);
+        });
+
+        function toggleStyleClass(checkbox) {
+            element = document.getElementById("passinput");
+            if (checkbox.checked) {
+                element.classList.remove('d-none');
+            } else {
+                element.classList.add('d-none');
+            }
+        }
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

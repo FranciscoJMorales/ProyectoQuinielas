@@ -195,6 +195,20 @@
                 </div>
             </div>
 
+            <div class="mt-3">
+                @if (Model.IsAdmin)
+                {
+                    <div>
+                        <a asp-action="Mine">Volver al administrador de quinielas</a>
+                    </div>
+                }
+                @if (Model.IsParticipant)
+                {
+                    <div>
+                        <a asp-action="Index">Volver a mis quinielas</a>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </section>
