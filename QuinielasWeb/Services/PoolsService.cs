@@ -44,5 +44,10 @@ namespace QuinielasWeb.Services
         {
             return await Post<Result>($"{Url}/leave", info);
         }
+
+        public async Task<Result> DeletePool(int id)
+        {
+            return await Delete<Result>($"{Url}/delete/{id}");
+        }
     }
 }

@@ -121,5 +121,14 @@ namespace QuinielasWeb.Controllers
             return Unauthorized();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _poolsService.DeletePool(id);
+            return new JsonResult(result.Alert);
+        }
     }
 }

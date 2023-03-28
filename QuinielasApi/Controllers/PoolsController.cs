@@ -25,7 +25,7 @@ namespace QuinielasApi.Controllers
         [HttpGet]
         public async Task<QuinielaFull?> GetPool(int id)
         {
-            var poolInfo = await _context.Pools.FindAsync(id);
+            var poolInfo = await _context.Pools.Where(p => p.Id == id && (bool)p.Active!).FirstOrDefaultAsync();
             if (poolInfo != null)
             {
                 var pool = await _context.Pools
@@ -274,7 +274,27 @@ namespace QuinielasApi.Controllers
                     Alert = "Operación exitosa",
                     AlertIcon = "info",
                     AlertMessage = $"Has abandonado la quiniela {pool.Name} correctamente",
-                    RedirectUrl = $"/quinielas"
+                    RedirectUrl = "/quinielas"
+                }
+            };
+        }
+
+        [Route("delete/{id}")]
+        [HttpDelete]
+        public async Task<Result> DeletePool(int id)
+        {
+            var pool = await _context.Pools.FindAsync(id);
+            pool!.Active = false;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Pool {pool.Name} deleted");
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Operación exitosa",
+                    AlertIcon = "info",
+                    AlertMessage = $"Se ha eliminado la quiniela {pool.Name} correctamente",
+                    RedirectUrl = "/quinielas/mine"
                 }
             };
         }

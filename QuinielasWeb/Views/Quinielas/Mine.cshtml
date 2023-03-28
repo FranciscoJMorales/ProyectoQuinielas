@@ -63,7 +63,7 @@
                                     </td>
                                     <td>
                                         <a asp-action="Quiniela" asp-route-id="@item.Id">Ingresar</a> |
-                                        <a asp-action="Delete" asp-route-id="@item.Id" style="color:red">Eliminar</a>
+                                        <a href="#" onclick="confirmDelete(@item.Id)" style="color:red">Eliminar</a>
                                     </td>
                                 </tr>
                             }
@@ -76,3 +76,22 @@
         </div>
     </div>
 </section>
+
+@section Scripts{
+    <script>
+        function confirmDelete(id) {
+            showAlert('Confirmar', '¿Estás seguro? Esta quiniela será eliminada permanentemente', 'warning', true, 'No', 'Sí').then(confirmed => {
+                if (confirmed) {
+                    const URL = `/quinielas/delete/${id}`;
+                    $.post(URL, function (data) {
+                        if (data) {
+                            showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                                window.location.replace(data.redirectUrl);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
