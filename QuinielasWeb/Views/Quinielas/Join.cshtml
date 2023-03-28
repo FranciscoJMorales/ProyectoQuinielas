@@ -27,10 +27,10 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Nombre)
                                 </th>
-                                <th>
+                                <th class="text-center">
                                     @Html.DisplayNameFor(model => model.Privada)
                                 </th>
-                                <th>
+                                <th class="text-center">
                                     @Html.DisplayNameFor(model => model.Participantes)
                                 </th>
                                 <th>
@@ -46,10 +46,13 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Nombre)
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Privada)
+                                    <td class="text-center">
+                                        @if (item.Privada)
+                                        {
+                                            <i class="bi bi-check-circle" style="color:green"></i>
+                                        }
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.Participantes)/@Html.DisplayFor(modelItem => item.Límite)
                                     </td>
                                     <td>

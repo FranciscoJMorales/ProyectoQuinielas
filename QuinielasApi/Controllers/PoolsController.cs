@@ -192,6 +192,23 @@ namespace QuinielasApi.Controllers
             await _context.Pools.AddAsync(poolModel);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Pool {pool.Name} created");
+            if (pool.Join)
+            {
+                var result = await Join(new UserPool { PoolId = poolModel.Id, UserId = pool.AdminId, Password = pool.Password });
+                if (result.HasError)
+                {
+                    return new Result
+                    {
+                        Alert = new AlertInfo
+                        {
+                            Alert = "Quiniela creada",
+                            AlertIcon = "info",
+                            AlertMessage = "Has creado la quiniela {pool.Name} correctamente, pero ocurrió un error al unirte. Prueba unirte más tarde",
+                            RedirectUrl = $"/quinielas/quiniela/{poolModel.Id}"
+                        }
+                    };
+                }
+            }
             return new Result
             {
                 Alert = new AlertInfo

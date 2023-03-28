@@ -24,5 +24,9 @@ public class Pool : Result
     [DisplayName("Límite de usuarios")]
     public int UsersLimit { get; set; }
 
+    [Required]
+    [DisplayName("Quiero participar en mi quiniela")]
+    public bool Join { get; set; }
+
     public bool? Active { get; set; }
 }
