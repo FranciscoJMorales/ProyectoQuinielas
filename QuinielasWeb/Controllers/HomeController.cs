@@ -59,30 +59,26 @@ namespace QuinielasWeb.Controllers
 
         [Route("/register")]
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string email, string password, string password2)
+        public async Task<IActionResult> Register(UserRegister userInfo)
         {
-            if (!password.Equals(password2))
+            if (!userInfo.Password.Equals(userInfo.ConfirmPassword))
             {
                 ViewBag.Alert = "Error al registrar";
                 ViewBag.AlertIcon = "error";
                 ViewBag.AlertMessage = "Las contrasenas no coinciden";
-                return View();
+                return View(userInfo);
             }
-            var user = await _authService.Register(new QuinielasModel.User { Username = username, Email = email, Password = password });
-            if (user.HasError)
+            var user = await _authService.Register(userInfo);
+            if (!user.HasError)
             {
-                ViewBag.Alert = user.Alert!.Alert;
-                ViewBag.AlertIcon = user.Alert.AlertIcon;
-                ViewBag.AlertMessage = user.Alert.AlertMessage;
-                return View();
+                HttpContext.Session.SetInt32("userid", user.Id);
+                HttpContext.Session.SetString("username", user.Username);
             }
-            HttpContext.Session.SetInt32("userid", user.Id);
-            HttpContext.Session.SetString("username", user.Username);
-            ViewBag.Alert = $"¡Bienvenido {user.Username}!";
-            ViewBag.AlertIcon = "success";
-            ViewBag.AlertMessage = "Te has registrado correctamente";
-            ViewBag.RedirectUrl = "/dashboard";
-            return View();
+            ViewBag.Alert = user.Alert!.Alert;
+            ViewBag.AlertIcon = user.Alert.AlertIcon;
+            ViewBag.AlertMessage = user.Alert.AlertMessage;
+            ViewBag.RedirectUrl = user.Alert.RedirectUrl;
+            return View(userInfo);
         }
 
         [Route("/logout")]

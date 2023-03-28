@@ -64,7 +64,7 @@ namespace QuinielasApi.Controllers
 
         [Route("register")]
         [HttpPost]
-        public async Task<UserId> Register(QuinielasModel.User userInfo)
+        public async Task<UserId> Register(UserRegister userInfo)
         {
             var usernameExists = await _context.Users
                 .Where(u => u.Username == userInfo.Username && (bool)u.Active!)
@@ -105,7 +105,14 @@ namespace QuinielasApi.Controllers
             return new UserId
             {
                 Id = user.Id,
-                Username = user.Username
+                Username = user.Username,
+                Alert = new AlertInfo
+                {
+                    Alert = $"¡Bienvenido {user.Username}!",
+                    AlertIcon = "success",
+                    AlertMessage = "Te has registrado correctamente",
+                    RedirectUrl = "/dashboard"
+                }
             };
         }
     }

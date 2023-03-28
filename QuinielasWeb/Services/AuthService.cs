@@ -17,9 +17,9 @@ namespace QuinielasWeb.Services
             return await Post<UserId>($"{Url}/login", userCreds);
         }
 
-        public async Task<UserId> Register(User userCreds)
+        public async Task<UserId> Register(UserRegister userInfo)
         {
-            return await Post<UserId>($"{Url}/register", userCreds);
+            return await Post<UserId>($"{Url}/register", userInfo);
         }
     }
 }
