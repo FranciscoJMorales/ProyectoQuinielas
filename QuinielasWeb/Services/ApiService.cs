@@ -40,4 +40,36 @@ public class ApiService
             throw new Exception(response.StatusCode.ToString());
         }
     }
+
+    protected async Task<T> Put<T>(string path, object? data)
+    {
+        var json_ = JsonConvert.SerializeObject(data);
+        var content = new StringContent(json_, Encoding.UTF8, "application/json");
+        _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+        var response = await _client.PutAsync(path, content);
+        int statusCode = (int)response.StatusCode;
+        if (statusCode >= 200 && statusCode < 300)
+        {
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
+        }
+        else
+        {
+            throw new Exception(response.StatusCode.ToString());
+        }
+    }
+
+    protected async Task<T> Delete<T>(string path)
+    {
+        _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+        var response = await _client.DeleteAsync(path);
+        int statusCode = (int)response.StatusCode;
+        if (statusCode >= 200 && statusCode < 300)
+        {
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
+        }
+        else
+        {
+            throw new Exception(response.StatusCode.ToString());
+        }
+    }
 }

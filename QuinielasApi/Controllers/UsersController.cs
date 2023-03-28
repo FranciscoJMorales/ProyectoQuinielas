@@ -30,7 +30,7 @@ namespace QuinielasApi.Controllers
         }
 
         [Route("update/{id}")]
-        [HttpPost]
+        [HttpPut]
         public async Task<Result> UpdateUser(int id, UpdateUser user)
         {
             var usernameExists = await _context.Users
@@ -83,7 +83,7 @@ namespace QuinielasApi.Controllers
         }
 
         [Route("password/{id}")]
-        [HttpPost]
+        [HttpPut]
         public async Task<Result> ChangePassword(int id, UpdatePassword password)
         {
             var user = await _context.Users.FindAsync(id);
@@ -116,7 +116,7 @@ namespace QuinielasApi.Controllers
         }
 
         [Route("delete/{id}")]
-        [HttpPost]
+        [HttpDelete]
         public async Task<Result> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
