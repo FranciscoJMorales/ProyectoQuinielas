@@ -174,6 +174,20 @@ namespace QuinielasApi.Controllers
                     };
                 }
             }
+            var poolExists = await _context.Pools.Where(p => p.Name == pool.Name && p.AdminId == pool.AdminId && (bool)p.Active!).FirstOrDefaultAsync();
+            if (poolExists != null)
+            {
+                return new Result
+                {
+                    HasError = true,
+                    Alert = new AlertInfo
+                    {
+                        Alert = "Error al crear quiniela",
+                        AlertIcon = "error",
+                        AlertMessage = "Ya creaste una quiniela con el mismo nombre"
+                    }
+                };
+            }
             var poolModel = Mapper.ToDbModel(pool);
             await _context.Pools.AddAsync(poolModel);
             await _context.SaveChangesAsync();
