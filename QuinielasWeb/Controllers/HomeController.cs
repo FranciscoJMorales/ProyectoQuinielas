@@ -35,15 +35,15 @@ namespace QuinielasWeb.Controllers
 
         [Route("/login")]
         [HttpPost]
-        public async Task<IActionResult> Login(string userid, string password)
+        public async Task<IActionResult> Login(UserAuth credentials)
         {
-            var user = await _authService.Login(new UserAuth { UserEmail = userid, Password = password });
+            var user = await _authService.Login(credentials);
             if (user.HasError)
             {
                 ViewBag.Alert = user.Alert!.Alert;
                 ViewBag.AlertIcon = user.Alert.AlertIcon;
                 ViewBag.AlertMessage = user.Alert.AlertMessage;
-                return View();
+                return View(credentials);
             }
             HttpContext.Session.SetInt32("userid", user.Id);
             HttpContext.Session.SetString("username", user.Username);
