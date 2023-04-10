@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<UsersService>();
 builder.Services.AddSingleton<PoolsService>();
+builder.Services.AddSingleton<GamesService>();
 
 builder.Services.AddDistributedMemoryCache();
 

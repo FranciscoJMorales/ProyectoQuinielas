@@ -1,17 +1,17 @@
-﻿@model IEnumerable<QuinielasModel.Game>
+﻿@model QuinielasModel.DTO.Games.PoolGames
 
 @{
-    ViewData["Title"] = $"{ViewBag.PoolName} - Partidos";
+    ViewData["Title"] = $"{Model.PoolName} - Partidos";
     int number = 0;
 }
 
 <div class="pagetitle">
-    <h1>@ViewBag.PoolName - Partidos</h1>
+    <h1>@Model.PoolName - Partidos</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
             <li class="breadcrumb-item"><a href="/quinielas/mine">Quinielas</a></li>
-            <li class="breadcrumb-item"><a href="/quinielas/quiniela/@ViewBag.PoolId">@ViewBag.PoolName</a></li>
+            <li class="breadcrumb-item"><a href="/quinielas/quiniela/@Model.PoolId">@Model.PoolName</a></li>
             <li class="breadcrumb-item active">Partidos</li>
         </ol>
     </nav>
@@ -34,7 +34,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Games!)
                             {
                                 number++;
                                 <tr>
@@ -73,7 +73,7 @@
                         </tbody>
                     </table>
                     <br>
-                    <a href="/games/@ViewBag.PoolId">Volver a la quiniela</a>
+                    <a href="/games/@Model.PoolId">Volver a la quiniela</a>
                 </div>
             </div>
         </div>
