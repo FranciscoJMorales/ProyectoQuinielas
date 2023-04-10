@@ -1,0 +1,100 @@
+﻿@model IEnumerable<QuinielasModel.Game>
+
+@{
+    ViewData["Title"] = $"{ViewBag.PoolName} - Partidos";
+    int number = 0;
+}
+
+<div class="pagetitle">
+    <h1>@ViewBag.PoolName - Partidos</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/quinielas/mine">Quinielas</a></li>
+            <li class="breadcrumb-item"><a href="/quinielas/quiniela/@ViewBag.PoolId">@ViewBag.PoolName</a></li>
+            <li class="breadcrumb-item active">Partidos</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Partidos</h5>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Fecha</th>
+                                <th class="text-center">Partido</th>
+                                <th class="text-center">Marcador Final</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                number++;
+                                <tr>
+                                    <td>
+                                        @number
+                                    </td>
+                                    <td>
+                                        @item.GameDate.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+                                    <td class="text-center">
+                                        @item.Team1 - @item.Team2
+                                    </td>
+                                    @if (item.Team1Score != null)
+                                    {
+                                        <td class="text-center">
+                                            @item.Team1Score - @item.Team2Score
+                                        </td>
+                                    } else
+                                    {
+                                        <td class="text-center">
+                                            @item.Team1Score - @item.Team2Score
+                                        </td>
+                                    }
+                                    <td>
+                                        <a asp-action="Editar partido" asp-route-id="@item.Id">Ingresar</a> |
+                                        @if (item.Team1Score != null)
+                                        {
+                                            <a href="#" onclick="addScore(@item.Id)">Agregar marcador</a>
+                                        } else
+                                        {
+                                            <a href="#" onclick="addScore(@item.Id)">Editar marcador</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <br>
+                    <a href="/games/@ViewBag.PoolId">Volver a la quiniela</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+        function addScore(id) {
+            showAlert('Confirmar', '¿Estás seguro que quieres abandonar esta quiniela?', 'warning', true, 'No', 'Sí').then(confirmed => {
+                if (confirmed) {
+                    //const URL = `/quinielas/leave/${id}`;
+                    //$.post(URL, function(data) {
+                    //    if (data) {
+                    //        showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                    //            window.location.replace(data.redirectUrl);
+                    //        });
+                    //    }
+                    //});
+                }
+            });
+        }
+    </script>
+}

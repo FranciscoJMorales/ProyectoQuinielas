@@ -1,0 +1,61 @@
+﻿@model QuinielasModel.Game
+
+@{
+    ViewData["Title"] = "Actualizar partido";
+}
+
+<div class="pagetitle">
+    <h1>Actualizar partido</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/quinielas/mine">Quinielas</a></li>
+            <li class="breadcrumb-item"><a href="/quinielas/quiniela/@Model.PoolId">@Model.PoolName</a></li>
+            <li class="breadcrumb-item active">Actualzar partido</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Actualizar partido</h5>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="PoolId" type="hidden" value="@Model.PoolId" />
+                        <div class="form-group">
+                            <label asp-for="GameDate" class="control-label"></label>
+                            <input asp-for="GameDate" class="form-control" />
+                            <span asp-validation-for="GameDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Team1" class="control-label"></label>
+                            <input asp-for="Team1" class="form-control" />
+                            <span asp-validation-for="Team1" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Team2" class="control-label"></label>
+                            <input asp-for="Team2" class="form-control" />
+                            <span asp-validation-for="Team2" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input type="submit" value="Actualizar" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div>
+    <a href="/games/@Model.PoolId">Volver a la quiniela</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
