@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using QuinielasModel;
-using QuinielasModel.DTO;
+using QuinielasModel.DTO.Pools;
 using System.Text;
 
 namespace QuinielasWeb.Services

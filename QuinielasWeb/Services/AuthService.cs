@@ -5,6 +5,7 @@ using QuinielasModel.DTO;
 using QuinielasModel;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Policy;
+using QuinielasModel.DTO.Auth;
 
 namespace QuinielasWeb.Services
 {

@@ -5,6 +5,7 @@ using QuinielasApi.Models;
 using QuinielasApi.Utils;
 using QuinielasModel;
 using QuinielasModel.DTO;
+using QuinielasModel.DTO.Auth;
 
 namespace QuinielasApi.Controllers
 {

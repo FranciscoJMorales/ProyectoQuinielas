@@ -2,7 +2,7 @@
 using QuinielasWeb.Models;
 using QuinielasWeb.Services;
 using System.Diagnostics;
-using QuinielasModel.DTO;
+using QuinielasModel.DTO.Auth;
 
 namespace QuinielasWeb.Controllers
 {

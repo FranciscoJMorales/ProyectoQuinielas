@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuinielasApi.Models;
-using QuinielasModel.DTO;
 using QuinielasModel;
 using QuinielasApi.Utils;
 using Microsoft.EntityFrameworkCore;
+using QuinielasModel.DTO.Users;
 
 namespace QuinielasApi.Controllers
 {

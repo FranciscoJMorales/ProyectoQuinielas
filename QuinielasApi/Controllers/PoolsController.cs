@@ -5,6 +5,7 @@ using QuinielasModel.DTO;
 using QuinielasModel;
 using QuinielasApi.Models;
 using Microsoft.EntityFrameworkCore;
+using QuinielasModel.DTO.Pools;
 
 namespace QuinielasApi.Controllers
 {

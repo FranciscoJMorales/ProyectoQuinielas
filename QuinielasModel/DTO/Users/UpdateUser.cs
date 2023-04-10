@@ -1,4 +1,4 @@
-﻿namespace QuinielasModel.DTO;
+﻿namespace QuinielasModel.DTO.Users;
 
 public class UpdateUser
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace QuinielasModel.DTO;
+namespace QuinielasModel.DTO.Auth;
 
 public class UserAuth
 {

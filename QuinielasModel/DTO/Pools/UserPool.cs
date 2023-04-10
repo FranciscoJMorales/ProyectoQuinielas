@@ -1,4 +1,4 @@
-﻿namespace QuinielasModel.DTO;
+﻿namespace QuinielasModel.DTO.Pools;
 
 public class UserPool
 {

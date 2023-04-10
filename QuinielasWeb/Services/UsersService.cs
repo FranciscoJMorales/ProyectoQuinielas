@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Newtonsoft.Json;
 using System.Text;
-using QuinielasModel.DTO;
 using QuinielasModel;
+using QuinielasModel.DTO.Users;
 
 namespace QuinielasWeb.Services
 {

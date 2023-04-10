@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuinielasWeb.Services;
-using QuinielasModel.DTO;
+using QuinielasModel.DTO.Users;
 
 namespace QuinielasWeb.Controllers
 {

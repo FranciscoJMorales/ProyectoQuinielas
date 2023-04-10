@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuinielasModel.DTO
+namespace QuinielasModel.DTO.Auth
 {
     public class UserRegister
     {
