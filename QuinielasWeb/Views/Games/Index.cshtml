@@ -28,7 +28,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Fecha</th>
-                                <th class="text-center">Partido</th>
+                                <th>Partido</th>
                                 <th class="text-center">Marcador Final</th>
                                 <th></th>
                             </tr>
@@ -44,7 +44,7 @@
                                     <td>
                                         @item.GameDate.ToString("dd/MM/yyyy HH:mm")
                                     </td>
-                                    <td class="text-center">
+                                    <td>
                                         @item.Team1 - @item.Team2
                                     </td>
                                     @if (item.Team1Score != null)
@@ -59,8 +59,8 @@
                                         </td>
                                     }
                                     <td>
-                                        <a asp-action="Editar partido" asp-route-id="@item.Id">Ingresar</a> |
-                                        @if (item.Team1Score != null)
+                                        <a asp-action="Update" asp-route-id="@item.Id">Editar partido</a> |
+                                        @if (item.Team1Score == null)
                                         {
                                             <a href="#" onclick="addScore(@item.Id)">Agregar marcador</a>
                                         } else

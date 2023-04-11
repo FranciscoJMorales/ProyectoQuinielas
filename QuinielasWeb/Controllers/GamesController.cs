@@ -18,7 +18,7 @@ namespace QuinielasWeb.Controllers
         }
 
         [HttpGet]
-        [Route("{poolid}")]
+        [Route("/games/{poolid}")]
         public async Task<IActionResult> Index(int poolid)
         {
             var userid = HttpContext.Session.GetInt32("userid");
@@ -46,7 +46,9 @@ namespace QuinielasWeb.Controllers
             if (!(bool)isAdmin)
                 return Unauthorized();
             var pool = await _poolsService.GetPoolId(id);
-            var newGame = new NewGame { PoolId = id, PoolName = pool!.Name };
+            var now = DateTime.Now;
+            var start = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
+            var newGame = new NewGame { PoolId = id, PoolName = pool!.Name, GameDate = start };
             return View(newGame);
         }
 
