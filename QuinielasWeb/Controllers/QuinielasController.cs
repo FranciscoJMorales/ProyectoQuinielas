@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuinielasWeb.Services;
 using QuinielasModel;
-using QuinielasModel.DTO;
+using QuinielasModel.DTO.Pools;
 
 namespace QuinielasWeb.Controllers
 {
