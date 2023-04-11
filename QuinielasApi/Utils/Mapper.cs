@@ -1,4 +1,5 @@
 ﻿using QuinielasApi.Models;
+using QuinielasModel.DTO.Games;
 
 namespace QuinielasApi.Utils;
 
@@ -27,6 +28,18 @@ public static class Mapper
             Password = pool.Password,
             Private = pool.Private,
             UsersLimit = pool.UsersLimit
+        };
+    }
+
+    public static Game ToDbModel(NewGame game)
+    {
+        return new Game
+        {
+            Id = game.Id,
+            GameDate = game.GameDate,
+            PoolId = game.PoolId,
+            Team1 = game.Team1,
+            Team2 = game.Team2
         };
     }
 }

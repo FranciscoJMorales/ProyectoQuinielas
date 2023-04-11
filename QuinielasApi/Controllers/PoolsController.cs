@@ -114,6 +114,16 @@ namespace QuinielasApi.Controllers
             return pools;
         }
 
+        [Route("{id}/isAdmin/{userid}")]
+        [HttpGet]
+        public async Task<bool?> IsAdmin(int id, int userid)
+        {
+            var pool = await _context.Pools.FindAsync(id);
+            if (pool == null)
+                return null;
+            return pool.AdminId == userid;
+        }
+
         [Route("mine/{userid}")]
         [HttpGet]
         public async Task<IEnumerable<QuinielaView>> GetMyPools(int userid)

@@ -7,19 +7,29 @@ namespace QuinielasWeb.Services
     {
         private string Url => baseUrl + "games";
 
-        public async Task<PoolGames?> GetGames(int poolid)
+        public async Task<NewGame?> GetGame(int id)
+        {
+            return await Get<NewGame?>($"{Url}/game/{id}");
+        }
+
+        public async Task<PoolGames?> GetPoolGames(int poolid)
         {
             return await Get<PoolGames?>($"{Url}/{poolid}");
         }
 
-        public async Task<Result> Create(Game game)
+        public async Task<Result> Create(NewGame game)
         {
             return await Post<Result>($"{Url}/create", game);
         }
 
-        public async Task<Result> Update(Game game)
+        public async Task<Result> Update(NewGame game)
         {
             return await Put<Result>($"{Url}/update/{game.Id}", game);
+        }
+
+        public async Task<Result> SetScore(GameScore score)
+        {
+            return await Put<Result>($"{Url}/setScore/{score.Id}", score);
         }
     }
 }
