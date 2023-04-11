@@ -94,6 +94,16 @@ namespace QuinielasApi.Controllers
             return null;
         }
 
+        [Route("id/{id}")]
+        [HttpGet]
+        public async Task<PoolId?> GetPoolId(int id)
+        {
+            var pool = await _context.Pools.Where(p => p.Id == id && (bool)p.Active!).FirstOrDefaultAsync();
+            if (pool == null)
+                return null;
+            return Mapper.ToModel(pool);
+        }
+
         [Route("other/{userid}")]
         [HttpGet]
         public async Task<IEnumerable<QuinielaView>> GetOtherPools(int userid)

@@ -15,6 +15,11 @@ namespace QuinielasWeb.Services
             return await Get<QuinielaFull?>($"{Url}/{id}");
         }
 
+        public async Task<PoolId?> GetPoolId(int id)
+        {
+            return await Get<PoolId?>($"{Url}/id/{id}");
+        }
+
         public async Task<bool?> IsAdmin(int id, int userId)
         {
             return await Get<bool?>($"{Url}/{id}/isAdmin/{userId}");

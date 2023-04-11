@@ -17,13 +17,15 @@ namespace QuinielasWeb.Controllers
             _poolsService = poolsService;
         }
 
-        public async Task<IActionResult> Index(int id)
+        [HttpGet]
+        [Route("{poolid}")]
+        public async Task<IActionResult> Index(int poolid)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
             ViewBag.User = HttpContext.Session.GetString("username");
-            var poolGames = await _gamesService.GetPoolGames(id);
+            var poolGames = await _gamesService.GetPoolGames(poolid);
             if (poolGames == null)
                 return NotFound();
             if (poolGames.AdminId != userid)
@@ -31,6 +33,7 @@ namespace QuinielasWeb.Controllers
             return View(poolGames);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Create(int id)
         {
             var userid = HttpContext.Session.GetInt32("userid");
@@ -42,10 +45,27 @@ namespace QuinielasWeb.Controllers
                 return NotFound();
             if (!(bool)isAdmin)
                 return Unauthorized();
-            var newGame = new NewGame { PoolId = id };
+            var pool = await _poolsService.GetPoolId(id);
+            var newGame = new NewGame { PoolId = id, PoolName = pool!.Name };
             return View(newGame);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(NewGame game)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _gamesService.Create(game);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            return View(game);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             var userid = HttpContext.Session.GetInt32("userid");
@@ -58,6 +78,21 @@ namespace QuinielasWeb.Controllers
                 return NotFound();
             if (!(bool)isAdmin)
                 return Unauthorized();
+            return View(game);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(NewGame game)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _gamesService.Update(game);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
             return View(game);
         }
     }

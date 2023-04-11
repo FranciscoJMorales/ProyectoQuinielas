@@ -1,5 +1,6 @@
 ﻿using QuinielasApi.Models;
 using QuinielasModel.DTO.Games;
+using QuinielasModel.DTO.Pools;
 
 namespace QuinielasApi.Utils;
 
@@ -14,6 +15,16 @@ public static class Mapper
             Email = user.Email,
             Password = user.Password,
             Username = user.Username
+        };
+    }
+
+    public static PoolId ToModel(Pool pool)
+    {
+        return new PoolId
+        {
+            Id = pool.Id,
+            AdminId = pool.AdminId,
+            Name = pool.Name
         };
     }
 

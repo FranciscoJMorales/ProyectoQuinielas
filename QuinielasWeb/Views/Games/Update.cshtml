@@ -11,7 +11,7 @@
             <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
             <li class="breadcrumb-item"><a href="/quinielas/mine">Quinielas</a></li>
             <li class="breadcrumb-item"><a href="/quinielas/quiniela/@Model.PoolId">@Model.PoolName</a></li>
-            <li class="breadcrumb-item active">Actualzar partido</li>
+            <li class="breadcrumb-item active">Actualizar partido</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -22,7 +22,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Actualizar partido</h5>
-                    <form asp-action="Create">
+                    <form asp-action="Update">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input asp-for="PoolId" type="hidden" value="@Model.PoolId" />
                         <div class="form-group">
