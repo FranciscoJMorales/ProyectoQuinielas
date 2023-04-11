@@ -71,7 +71,7 @@ namespace QuinielasApi.Controllers
             return pool;
         }
 
-        [Route("{create}")]
+        [Route("create")]
         [HttpPost]
         public async Task<Result> Create(NewGame newGame)
         {
@@ -87,6 +87,49 @@ namespace QuinielasApi.Controllers
                     AlertIcon = "success",
                     AlertMessage = $"Has creado el partido {newGame.Team1} - {newGame.Team2} correctamente",
                     RedirectUrl = $"/games/{newGame.PoolId}"
+                }
+            };
+        }
+
+        [Route("update/{id}")]
+        [HttpPost]
+        public async Task<Result> Update(int id, NewGame newGame)
+        {
+            var game = await _context.Games.FindAsync(id);
+            game!.Team1 = newGame.Team1;
+            game.Team2 = newGame.Team2;
+            game.GameDate = newGame.GameDate;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Game {newGame.Team1} - {newGame.Team2} updated");
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Partido actualizado",
+                    AlertIcon = "success",
+                    AlertMessage = $"Has actualizado el partido {newGame.Team1} - {newGame.Team2} correctamente",
+                    RedirectUrl = $"/games/{game.PoolId}"
+                }
+            };
+        }
+
+        [Route("setScore/{id}")]
+        [HttpPost]
+        public async Task<Result> Update(int id, GameScore score)
+        {
+            var game = await _context.Games.FindAsync(id);
+            game!.Team1Score = score.Team1Score;
+            game.Team2Score = score.Team2Score;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Score set: {game.Team1} {score.Team1Score} - {score.Team2Score} {game.Team2}");
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Marcador actualizado",
+                    AlertIcon = "success",
+                    AlertMessage = $"El marcador del partido {game.Team1} - {game.Team2} se ha colocado correctamente",
+                    RedirectUrl = $"/games/{game.PoolId}"
                 }
             };
         }
