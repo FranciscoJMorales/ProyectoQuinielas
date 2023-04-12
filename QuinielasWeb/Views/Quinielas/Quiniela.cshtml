@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Model.Nombre;
+    int number = 0;
 }
 
 <div class="pagetitle">
@@ -157,7 +158,7 @@
                         <div class="tab-pane fade" id="pool-games">
                             <h5 class="card-title">Partidos de @Model.Nombre</h5>
                             <!-- Games Table -->
-                            <table class="table table-hover">
+                            <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
                                         <th scope="col">No.</th>
@@ -169,15 +170,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-@*                                    @foreach (var item in Model.Partidos!)
+                                    @foreach (var item in Model.Partidos!)
                                     {
+                                        var lastDate = new DateTime(item.GameDate.Year, item.GameDate.Month, item.GameDate.Day);
+                                        number++;
                                         <tr>
-                                            <th scope="row">@item.Posición/th>
-                                            <td>@item.Usuario</td>
-                                            <td>@item.Puntuación</td>
+                                            <td>@number</td>
+                                            <td>@item.GameDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@item.Team1 - @item.Team2</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>
+                                                @if (item.Team1Score == null && DateTime.Now < lastDate)
+                                                {
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("scoreModal" + item.Id)">Enviar predicción</a>
+                                                }
+                                            </td>
                                         </tr>
                                     }
-*@                                </tbody>
+                                </tbody>
                             </table>
                             <!-- End Games Table -->
 
