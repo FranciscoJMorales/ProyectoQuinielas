@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuinielasModel.DTO.Games;
+using QuinielasModel.DTO.Pools;
 using QuinielasWeb.Services;
 
 namespace QuinielasWeb.Controllers
@@ -96,6 +97,27 @@ namespace QuinielasWeb.Controllers
             ViewBag.AlertMessage = result.Alert.AlertMessage;
             ViewBag.RedirectUrl = result.Alert.RedirectUrl;
             return View(game);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetScore(GameScore score)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _gamesService.SetScore(score);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            var game = await _gamesService.GetGame(score.Id);
+            var poolGames = await _gamesService.GetPoolGames(game!.PoolId);
+            if (poolGames == null)
+                return NotFound();
+            if (poolGames.AdminId != userid)
+                return Unauthorized();
+            return View("Index", poolGames);
         }
     }
 }
