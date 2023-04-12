@@ -109,13 +109,9 @@ namespace QuinielasWeb.Controllers
             if (userid == null)
                 return RedirectToAction("login", "Home");
             ViewBag.User = HttpContext.Session.GetString("username");
-            var pool = await _poolsService.GetPool(id);
+            var pool = await _poolsService.GetPool(id, (int)userid);
             if (pool == null)
                 return NotFound();
-            if (pool.AdminId == userid)
-                pool.IsAdmin = true;
-            if (pool.Users!.Find(u => u.Id == userid) != null)
-                pool.IsParticipant = true;
             if (pool.IsAdmin || pool.IsParticipant)
                 return View(pool);
             return Unauthorized();

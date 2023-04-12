@@ -20,7 +20,7 @@ public class QuinielaFull : Result
 
     public List<UserScore>? UsersScore { get; set; }
 
-    public List<Game>? Partidos { get; set; }
+    public List<GamePrediction>? Partidos { get; set; }
 
     public bool IsAdmin { get; set; }
 

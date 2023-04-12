@@ -1,8 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json;
-using QuinielasModel;
+﻿using QuinielasModel;
 using QuinielasModel.DTO.Pools;
-using System.Text;
 
 namespace QuinielasWeb.Services
 {
@@ -10,9 +7,9 @@ namespace QuinielasWeb.Services
     {
         private string Url => baseUrl + "pools";
 
-        public async Task<QuinielaFull?> GetPool(int id)
+        public async Task<QuinielaFull?> GetPool(int id, int userid)
         {
-            return await Get<QuinielaFull?>($"{Url}/{id}");
+            return await Get<QuinielaFull?>($"{Url}/{id}/{userid}");
         }
 
         public async Task<PoolId?> GetPoolId(int id)

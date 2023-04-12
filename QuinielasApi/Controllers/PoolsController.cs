@@ -6,6 +6,8 @@ using QuinielasModel;
 using QuinielasApi.Models;
 using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Pools;
+using Org.BouncyCastle.Asn1.X509;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace QuinielasApi.Controllers
 {
@@ -22,9 +24,9 @@ namespace QuinielasApi.Controllers
             _logger = logger;
         }
 
-        [Route("{id}")]
+        [Route("{id}/{userid}")]
         [HttpGet]
-        public async Task<QuinielaFull?> GetPool(int id)
+        public async Task<QuinielaFull?> GetPool(int id, int userid)
         {
             var poolInfo = await _context.Pools.Where(p => p.Id == id && (bool)p.Active!).FirstOrDefaultAsync();
             if (poolInfo != null)
@@ -64,15 +66,13 @@ namespace QuinielasApi.Controllers
                     .ToListAsync();
                 pool.Partidos = await _context.Games
                     .Where(g => g.PoolId == poolInfo.Id)
-                    .Select(g => new QuinielasModel.Game
+                    .Select(g => new GamePrediction
                     {
                         Id = g.Id,
-                        Active = g.Active,
                         GameDate = g.GameDate,
-                        PoolId = g.PoolId,
                         Team1 = g.Team1,
-                        Team1Score = g.Team1Score,
                         Team2 = g.Team2,
+                        Team1Score = g.Team1Score,
                         Team2Score = g.Team2Score
                     }).OrderBy(g => g.GameDate)
                     .ToListAsync();
@@ -90,6 +90,33 @@ namespace QuinielasApi.Controllers
                             pool.UsersScore[i].Posición = pool.UsersScore[i - 1].Posición;
                     }
                 }
+
+                //Get scores, predictions and availability
+                foreach (var item in pool.Partidos)
+                {
+                    //Check if game is available
+                    var lastDate = new DateTime(item.GameDate.Year, item.GameDate.Month, item.GameDate.Day);
+                    if (item.Team1Score == null && DateTime.Now < lastDate)
+                        item.Available = true;
+
+                    //Set user prediction and score
+                    var prediction = await _context.Predictions
+                    .Where(p => p.GameId == item.Id && p.UserId == userid)
+                        .FirstOrDefaultAsync();
+                    if (prediction != null)
+                    {
+                        item.Team1Prediction = prediction.Team1Score;
+                        item.Team2Prediction = prediction.Team2Score;
+                        item.Score = prediction.Score;
+                    }
+                }
+
+                //Check if user is allowed to see pool
+                if (pool.AdminId == userid)
+                    pool.IsAdmin = true;
+                if (pool.Users!.Find(u => u.Id == userid) != null)
+                    pool.IsParticipant = true;
+
                 return pool;
             }
             return null;

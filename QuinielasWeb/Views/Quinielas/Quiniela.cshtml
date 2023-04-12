@@ -103,7 +103,7 @@
                                                     <i class="bi bi-calendar-check-fill"></i>
                                                 </div>
                                                 <div class="ps-3">
-                                                    <h6>@Model.Partidos!.Count</h6>
+                                                    <h6>@Model.Partidos!.Where(p => p.Team1Score != null).ToList().Count</h6>
                                                     <span class="text-muted small pt-2 ps-1">Partidos finalizados</span>
                                                 </div>
                                             </div>
@@ -164,26 +164,37 @@
                                         <th scope="col">No.</th>
                                         <th scope="col">Fecha</th>
                                         <th scope="col">Partido</th>
-                                        <th scope="col">Mi predicción</th>
-                                        <th scope="col">Puntuación</th>
+                                        <th scope="col" class="text-center">Resultado</th>
+                                        @if (Model.IsParticipant)
+                                        {
+                                            <th scope="col" class="text-center">Mi predicción</th>
+                                            <th scope="col" class="text-center">Puntuación</th>
+                                        }
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model.Partidos!)
                                     {
-                                        var lastDate = new DateTime(item.GameDate.Year, item.GameDate.Month, item.GameDate.Day);
                                         number++;
                                         <tr>
                                             <td>@number</td>
                                             <td>@item.GameDate.ToString("dd/MM/yyyy HH:mm")</td>
                                             <td>@item.Team1 - @item.Team2</td>
-                                            <td>-</td>
-                                            <td>-</td>
+                                            <td class="text-center">@item.Team1Score - @item.Team2Score</td>
+                                            @if (Model.IsParticipant)
+                                            {
+                                                <td class="text-center">@item.Team1Prediction - @item.Team2Prediction</td>
+                                                <td class="text-center">@item.Score</td>
+                                            }
                                             <td>
-                                                @if (item.Team1Score == null && DateTime.Now < lastDate)
+                                                @if (!item.Available)
                                                 {
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("scoreModal" + item.Id)">Enviar predicción</a>
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("predictionsModal" + item.Id)">Ver predicciones</a>
+                                                }
+                                                else if (Model.IsParticipant)
+                                                {
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("sendPredictionModal" + item.Id)">Enviar predicción</a>
                                                 }
                                             </td>
                                         </tr>

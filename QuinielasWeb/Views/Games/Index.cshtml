@@ -94,28 +94,9 @@
                         </tbody>
                     </table>
                     <br>
-                    <a href="/games/@Model.PoolId">Volver a la quiniela</a>
+                    <a href="/quinielas/quiniela/@Model.PoolId">Volver a la quiniela</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-@section Scripts{
-    <script>
-        function addScore(id) {
-            showAlert('Confirmar', '¿Estás seguro que quieres abandonar esta quiniela?', 'warning', true, 'No', 'Sí').then(confirmed => {
-                if (confirmed) {
-                    //const URL = `/quinielas/leave/${id}`;
-                    //$.post(URL, function(data) {
-                    //    if (data) {
-                    //        showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
-                    //            window.location.replace(data.redirectUrl);
-                    //        });
-                    //    }
-                    //});
-                }
-            });
-        }
-    </script>
-}
