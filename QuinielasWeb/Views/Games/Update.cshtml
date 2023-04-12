@@ -25,6 +25,7 @@
                     <form asp-action="Update">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input asp-for="PoolId" type="hidden" value="@Model.PoolId" />
+                        <input asp-for="PoolName" type="hidden" value="@Model.PoolName" />
                         <div class="form-group">
                             <label asp-for="GameDate" class="control-label"></label>
                             <input asp-for="GameDate" class="form-control" />

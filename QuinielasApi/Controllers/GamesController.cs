@@ -67,7 +67,8 @@ namespace QuinielasApi.Controllers
                     Team1Score = g.Team1Score,
                     Team2 = g.Team2,
                     Team2Score = g.Team2Score
-                }).ToListAsync();
+                }).OrderBy(g => g.GameDate)
+                .ToListAsync();
             return pool;
         }
 
@@ -76,6 +77,7 @@ namespace QuinielasApi.Controllers
         public async Task<Result> Create(NewGame newGame)
         {
             var game = Mapper.ToDbModel(newGame);
+            game.Id = 0;
             await _context.Games.AddAsync(game);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Game {newGame.Team1} - {newGame.Team2} created in pool {newGame.PoolName}");
@@ -92,7 +94,7 @@ namespace QuinielasApi.Controllers
         }
 
         [Route("update/{id}")]
-        [HttpPost]
+        [HttpPut]
         public async Task<Result> Update(int id, NewGame newGame)
         {
             var game = await _context.Games.FindAsync(id);
@@ -114,7 +116,7 @@ namespace QuinielasApi.Controllers
         }
 
         [Route("setScore/{id}")]
-        [HttpPost]
+        [HttpPut]
         public async Task<Result> Update(int id, GameScore score)
         {
             var game = await _context.Games.FindAsync(id);

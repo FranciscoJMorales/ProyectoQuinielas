@@ -23,7 +23,8 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Partidos</h5>
-                    <table class="table table-striped table-hover">
+                    <a href="create/@Model.PoolId">Agregar partido</a>
+                    <table class="table table-striped table-hover mt-3">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -47,17 +48,9 @@
                                     <td>
                                         @item.Team1 - @item.Team2
                                     </td>
-                                    @if (item.Team1Score != null)
-                                    {
-                                        <td class="text-center">
-                                            @item.Team1Score - @item.Team2Score
-                                        </td>
-                                    } else
-                                    {
-                                        <td class="text-center">
-                                            @item.Team1Score - @item.Team2Score
-                                        </td>
-                                    }
+                                    <td class="text-center">
+                                        @item.Team1Score - @item.Team2Score
+                                    </td>
                                     <td>
                                         <a asp-action="Update" asp-route-id="@item.Id">Editar partido</a> |
                                         @if (item.Team1Score == null)

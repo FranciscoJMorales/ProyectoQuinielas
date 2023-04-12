@@ -74,7 +74,8 @@ namespace QuinielasApi.Controllers
                         Team1Score = g.Team1Score,
                         Team2 = g.Team2,
                         Team2Score = g.Team2Score
-                    }).ToListAsync();
+                    }).OrderBy(g => g.GameDate)
+                    .ToListAsync();
 
                 //Assign positions
                 if (pool.UsersScore.Count > 0)
