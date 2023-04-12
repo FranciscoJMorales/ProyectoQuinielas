@@ -176,6 +176,7 @@
                                 <tbody>
                                     @foreach (var item in Model.Partidos!)
                                     {
+                                        string text = item.Team1Prediction == null ? "Enviar predicción" : "Actualizar predicción";
                                         number++;
                                         <tr>
                                             <td>@number</td>
@@ -194,7 +195,40 @@
                                                 }
                                                 else if (Model.IsParticipant)
                                                 {
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("sendPredictionModal" + item.Id)">Enviar predicción</a>
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("sendPredictionModal" + item.Id)">@text</a>
+                                                    <div class="modal fade" id="@("sendPredictionModal" + item.Id)" tabindex="-1">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">@text</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <form asp-action="SendPrediction" method="post">
+                                                                    <div class="modal-body">
+                                                                        Ingresa tu predicción para el partido:
+                                                                        <input type="hidden" name="Id" value="@item.Id">
+                                                                        <div class="row justify-content-md-center">
+                                                                            <div class="col-sm-auto" style="text-align:right;">
+                                                                                <label for="Team1Score" class="form-label">@item.Team1</label>
+                                                                                <input type="number" class="form-control prediction-form" name="Team1Score" value="@item.Team1Prediction" min="0" max="20" required>
+                                                                            </div>
+                                                                            <div class="col-sm-auto">
+                                                                                <p> - </p>
+                                                                            </div>
+                                                                            <div class="col-sm-auto">
+                                                                                <label for="Team2Score" class="form-label">@item.Team2</label>
+                                                                                <input type="number" class="form-control prediction-form" name="Team2Score" value="@item.Team2Prediction" min="0" max="20" required>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div><!-- End Prediction Modal-->
                                                 }
                                             </td>
                                         </tr>
