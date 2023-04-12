@@ -1,4 +1,5 @@
 ﻿using QuinielasModel;
+using QuinielasModel.DTO.Predictions;
 
 namespace QuinielasWeb.Services
 {
@@ -6,14 +7,9 @@ namespace QuinielasWeb.Services
     {
         private string Url => baseUrl + "predictions";
 
-        public async Task<Result> SendPrediction(Prediction prediction)
+        public async Task<Result> SendPrediction(NewPrediction prediction)
         {
-            return await Post<Result>($"{Url}/create", prediction);
-        }
-
-        public async Task<Result> UpdatePrediction(Prediction prediction)
-        {
-            return await Put<Result>($"{Url}/update", prediction);
+            return await Post<Result>($"{Url}", prediction);
         }
     }
 }

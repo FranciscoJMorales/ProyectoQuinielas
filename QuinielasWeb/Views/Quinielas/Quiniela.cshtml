@@ -206,7 +206,8 @@
                                                                 <form asp-action="SendPrediction" method="post">
                                                                     <div class="modal-body">
                                                                         Ingresa tu predicción para el partido:
-                                                                        <input type="hidden" name="Id" value="@item.Id">
+                                                                        <input type="hidden" name="PoolId" value="@Model.Id">
+                                                                        <input type="hidden" name="GameId" value="@item.Id">
                                                                         <div class="row justify-content-md-center">
                                                                             <div class="col-sm-auto" style="text-align:right;">
                                                                                 <label for="Team1Score" class="form-label">@item.Team1</label>
