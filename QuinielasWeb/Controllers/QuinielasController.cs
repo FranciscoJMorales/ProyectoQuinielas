@@ -10,13 +10,11 @@ namespace QuinielasWeb.Controllers
     {
         private readonly ILogger<QuinielasController> _logger;
         private readonly PoolsService _poolsService;
-        private readonly PredictionsService _predictionsService;
 
-        public QuinielasController(ILogger<QuinielasController> logger, PoolsService poolsService, PredictionsService predictionsService)
+        public QuinielasController(ILogger<QuinielasController> logger, PoolsService poolsService)
         {
             _logger = logger;
             _poolsService = poolsService;
-            _predictionsService = predictionsService;
         }
 
         [HttpGet]
@@ -113,27 +111,6 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             ViewBag.User = HttpContext.Session.GetString("username");
             var pool = await _poolsService.GetPool(id, (int)userid);
-            if (pool == null)
-                return NotFound();
-            if (pool.IsAdmin || pool.IsParticipant)
-                return View(pool);
-            return Unauthorized();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SendPrediction(NewPrediction prediction)
-        {
-            var userid = HttpContext.Session.GetInt32("userid");
-            if (userid == null)
-                return RedirectToAction("login", "Home");
-            prediction.UserId = (int)userid;
-            var result = await _predictionsService.SendPrediction(prediction);
-            ViewBag.User = HttpContext.Session.GetString("username");
-            ViewBag.Alert = result.Alert!.Alert;
-            ViewBag.AlertIcon = result.Alert.AlertIcon;
-            ViewBag.AlertMessage = result.Alert.AlertMessage;
-            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
-            var pool = await _poolsService.GetPool(prediction.PoolId, (int)userid);
             if (pool == null)
                 return NotFound();
             if (pool.IsAdmin || pool.IsParticipant)

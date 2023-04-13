@@ -185,7 +185,7 @@
                                             <td class="text-center">@item.Team1Score - @item.Team2Score</td>
                                             @if (Model.IsParticipant)
                                             {
-                                                <td class="text-center">@item.Team1Prediction - @item.Team2Prediction</td>
+                                                <td class="text-center" id="@("prediction" + item.Id)">@item.Team1Prediction - @item.Team2Prediction</td>
                                                 <td class="text-center">@item.Score</td>
                                             }
                                             <td>
@@ -239,6 +239,7 @@
     </div>
 </section>
 
+<!-- Prediction Modal-->
 <div class="modal fade" id="sendPredictionModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -277,24 +278,29 @@
 @section Scripts {
 <script>
     function showPredictionModal(title, gameId, team1, team2) {
-        console.log('a');
         document.getElementById("predictionModalTitle").innerHTML = title;
         document.getElementById("GameId").value = gameId;
         document.getElementById("Team1Label").innerHTML = team1;
         document.getElementById("Team2Label").innerHTML = team2;
-            $("#sendPredictionModal").modal('show');
+        $("#sendPredictionModal").modal('show');
     }
 
     function sendPrediction() {
-        showAlert('Confirmar', '¿Estás seguro que quieres abandonar esta quiniela?', 'warning', true, 'No', 'Sí').then(confirmed => {
-            if (confirmed) {
-                const URL = `/quinielas/leave/${id}`;
-                $.post(URL, function (data) {
-                    if (data) {
-                        showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
-                            window.location.replace(data.redirectUrl);
-                        });
-                    }
+        const poolId = @Model.Id;
+        const gameId = document.getElementById("GameId").value;
+        const team1Score = document.getElementById("Team1Score").value;
+        const team2Score = document.getElementById("Team2Score").value;
+        const URL = '/predictions/send';
+        $.post(URL,{
+            "PoolId": poolId,
+            "GameId": gameId,
+            "Team1Score": team1Score,
+            "Team2Score": team2Score
+        }, function (data) {
+            if (data) {
+                showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                    document.getElementById("prediction" + gameId).innerHTML = `${team1Score} - ${team2Score}`;
+                    document.getElementById("action" + gameId).innerHTML = "Actualizar predicción";
                 });
             }
         });
