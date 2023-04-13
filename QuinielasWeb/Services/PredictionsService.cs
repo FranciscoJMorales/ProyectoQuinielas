@@ -9,7 +9,7 @@ namespace QuinielasWeb.Services
 
         public async Task<Result> SendPrediction(NewPrediction prediction)
         {
-            return await Post<Result>($"{Url}", prediction);
+            return await Post<Result>($"{Url}/send", prediction);
         }
     }
 }

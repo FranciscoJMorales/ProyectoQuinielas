@@ -16,7 +16,7 @@ namespace QuinielasWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendPrediction(NewPrediction prediction)
+        public async Task<IActionResult> Send(NewPrediction prediction)
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)

@@ -255,14 +255,14 @@
                     <div class="row justify-content-md-center">
                         <div class="col-sm-auto" style="text-align:right;">
                             <label for="Team1Score" class="form-label" id="Team1Label"></label>
-                            <input type="number" class="form-control prediction-form" name="Team1Score" min="0" max="20" required>
+                            <input type="number" class="form-control prediction-form" id="Team1Score" name="Team1Score" min="0" max="20" required>
                         </div>
                         <div class="col-sm-auto">
                             <p> - </p>
                         </div>
                         <div class="col-sm-auto">
                             <label for="Team2Score" class="form-label" id="Team2Label"></label>
-                            <input type="number" class="form-control prediction-form" name="Team2Score" min="0" max="20" required>
+                            <input type="number" class="form-control prediction-form" id="Team2Score" name="Team2Score" min="0" max="20" required>
                         </div>
                     </div>
                 </div>
@@ -276,34 +276,37 @@
 </div><!-- End Prediction Modal-->
 
 @section Scripts {
-<script>
-    function showPredictionModal(title, gameId, team1, team2) {
-        document.getElementById("predictionModalTitle").innerHTML = title;
-        document.getElementById("GameId").value = gameId;
-        document.getElementById("Team1Label").innerHTML = team1;
-        document.getElementById("Team2Label").innerHTML = team2;
-        $("#sendPredictionModal").modal('show');
-    }
+    <script>
+        function showPredictionModal(title, gameId, team1, team2) {
+            document.getElementById("predictionModalTitle").innerHTML = title;
+            document.getElementById("GameId").value = gameId;
+            document.getElementById("Team1Label").innerHTML = team1;
+            document.getElementById("Team2Label").innerHTML = team2;
+            document.getElementById("Team1Score").value = null;
+            document.getElementById("Team2Score").value = null;
+            $("#sendPredictionModal").modal('show');
+        }
 
-    function sendPrediction() {
-        const poolId = @Model.Id;
-        const gameId = document.getElementById("GameId").value;
-        const team1Score = document.getElementById("Team1Score").value;
-        const team2Score = document.getElementById("Team2Score").value;
-        const URL = '/predictions/send';
-        $.post(URL,{
-            "PoolId": poolId,
-            "GameId": gameId,
-            "Team1Score": team1Score,
-            "Team2Score": team2Score
-        }, function (data) {
-            if (data) {
-                showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
-                    document.getElementById("prediction" + gameId).innerHTML = `${team1Score} - ${team2Score}`;
-                    document.getElementById("action" + gameId).innerHTML = "Actualizar predicción";
-                });
-            }
-        });
-    }
-</script>
+        function sendPrediction() {
+            const poolId = @Model.Id;
+            const gameId = document.getElementById("GameId").value;
+            const team1Score = document.getElementById("Team1Score").value;
+            const team2Score = document.getElementById("Team2Score").value;
+            const URL = '/predictions/send';
+            $.post(URL,{
+                "PoolId": poolId,
+                "GameId": gameId,
+                "Team1Score": team1Score,
+                "Team2Score": team2Score
+            }, function (data) {
+                if (data) {
+                    showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                        document.getElementById("prediction" + gameId).innerHTML = `${team1Score} - ${team2Score}`;
+                        document.getElementById("action" + gameId).innerHTML = "Actualizar predicción";
+                        $("#sendPredictionModal").modal('hide');
+                    });
+                }
+            });
+        }
+    </script>
 }

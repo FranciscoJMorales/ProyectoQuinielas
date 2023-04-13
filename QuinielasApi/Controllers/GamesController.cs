@@ -117,7 +117,7 @@ namespace QuinielasApi.Controllers
 
         [Route("setScore/{id}")]
         [HttpPut]
-        public async Task<Result> Update(int id, GameScore score)
+        public async Task<Result> SetScore(int id, GameScore score)
         {
             var game = await _context.Games.FindAsync(id);
             game!.Team1Score = score.Team1Score;

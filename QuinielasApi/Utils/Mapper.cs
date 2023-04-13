@@ -1,6 +1,7 @@
 ﻿using QuinielasApi.Models;
 using QuinielasModel.DTO.Games;
 using QuinielasModel.DTO.Pools;
+using QuinielasModel.DTO.Predictions;
 
 namespace QuinielasApi.Utils;
 
@@ -51,6 +52,17 @@ public static class Mapper
             PoolId = game.PoolId,
             Team1 = game.Team1,
             Team2 = game.Team2
+        };
+    }
+
+    public static Prediction ToDbModel(NewPrediction prediction)
+    {
+        return new Prediction
+        {
+            GameId = prediction.GameId,
+            UserId = prediction.UserId,
+            Team1Score = prediction.Team1Score,
+            Team2Score = prediction.Team2Score
         };
     }
 }
