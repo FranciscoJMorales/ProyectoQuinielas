@@ -176,6 +176,17 @@
                                 <tbody>
                                     @foreach (var item in Model.Partidos!)
                                     {
+                                        string textColor = "text-success";
+                                        if (item.Score == null)
+                                        {
+                                            if (item.Team1Score != null)
+                                                item.Score = 0;
+                                            textColor = "text-secondary";
+                                        }
+                                        else if (item.Score == 0)
+                                            textColor = "text-danger";
+                                        else if (item.Score == 2)
+                                            textColor = "text-warning";
                                         string text = item.Team1Prediction == null ? "Enviar predicción" : "Actualizar predicción";
                                         number++;
                                         <tr>
@@ -186,7 +197,7 @@
                                             @if (Model.IsParticipant)
                                             {
                                                 <td class="text-center" id="@("prediction" + item.Id)">@item.Team1Prediction - @item.Team2Prediction</td>
-                                                <td class="text-center">@item.Score</td>
+                                                <td class="text-center fw-bold @textColor">@item.Score</td>
                                             }
                                             <td>
                                                 @if (!item.Available)
@@ -252,7 +263,7 @@
                     Ingresa tu predicción para el partido:
                     <input type="hidden" name="PoolId" value="@Model.Id">
                     <input type="hidden" name="GameId" id="GameId">
-                    <div class="row justify-content-md-center">
+                    <div class="row justify-content-md-center mt-3">
                         <div class="col-sm-auto" style="text-align:right;">
                             <label for="Team1Score" class="form-label" id="Team1Label"></label>
                             <input type="number" class="form-control prediction-form" id="Team1Score" name="Team1Score" min="0" max="20" required>

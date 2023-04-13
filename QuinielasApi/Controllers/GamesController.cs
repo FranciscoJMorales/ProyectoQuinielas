@@ -122,6 +122,20 @@ namespace QuinielasApi.Controllers
             var game = await _context.Games.FindAsync(id);
             game!.Team1Score = score.Team1Score;
             game.Team2Score = score.Team2Score;
+            var predictions = await _context.Predictions
+                .Where(p => p.GameId == game.Id)
+                .ToListAsync();
+            foreach (var prediction in predictions)
+            {
+                if (prediction.Team1Score == game.Team1Score && prediction.Team2Score == game.Team2Score)
+                    prediction.Score = 5;
+                else if (prediction.Team1Score > prediction.Team2Score && game.Team1Score > game.Team2Score ||
+                    prediction.Team1Score < prediction.Team2Score && game.Team1Score < game.Team2Score ||
+                    prediction.Team1Score == prediction.Team2Score && game.Team1Score == game.Team2Score)
+                    prediction.Score = 2;
+                else
+                    prediction.Score = 0;
+            }
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Score set: {game.Team1} {score.Team1Score} - {score.Team2Score} {game.Team2}");
             return new Result
