@@ -195,41 +195,7 @@
                                                 }
                                                 else if (Model.IsParticipant)
                                                 {
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("sendPredictionModal" + item.Id)">@text</a>
-                                                    <div class="modal fade" id="@("sendPredictionModal" + item.Id)" tabindex="-1">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">@text</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <form asp-action="SendPrediction" method="post">
-                                                                    <div class="modal-body">
-                                                                        Ingresa tu predicción para el partido:
-                                                                        <input type="hidden" name="PoolId" value="@Model.Id">
-                                                                        <input type="hidden" name="GameId" value="@item.Id">
-                                                                        <div class="row justify-content-md-center">
-                                                                            <div class="col-sm-auto" style="text-align:right;">
-                                                                                <label for="Team1Score" class="form-label">@item.Team1</label>
-                                                                                <input type="number" class="form-control prediction-form" name="Team1Score" value="@item.Team1Prediction" min="0" max="20" required>
-                                                                            </div>
-                                                                            <div class="col-sm-auto">
-                                                                                <p> - </p>
-                                                                            </div>
-                                                                            <div class="col-sm-auto">
-                                                                                <label for="Team2Score" class="form-label">@item.Team2</label>
-                                                                                <input type="number" class="form-control prediction-form" name="Team2Score" value="@item.Team2Prediction" min="0" max="20" required>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div><!-- End Prediction Modal-->
+                                                    <a href="#" onclick="showPredictionModal('@text', @item.Id, '@item.Team1', '@item.Team2'); return false;" id="@("action" + item.Id)">@text</a>
                                                 }
                                             </td>
                                         </tr>
@@ -272,3 +238,66 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="sendPredictionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="predictionModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form onsubmit="return false;" method="post">
+                <div class="modal-body">
+                    Ingresa tu predicción para el partido:
+                    <input type="hidden" name="PoolId" value="@Model.Id">
+                    <input type="hidden" name="GameId" id="GameId">
+                    <div class="row justify-content-md-center">
+                        <div class="col-sm-auto" style="text-align:right;">
+                            <label for="Team1Score" class="form-label" id="Team1Label"></label>
+                            <input type="number" class="form-control prediction-form" name="Team1Score" min="0" max="20" required>
+                        </div>
+                        <div class="col-sm-auto">
+                            <p> - </p>
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="Team2Score" class="form-label" id="Team2Label"></label>
+                            <input type="number" class="form-control prediction-form" name="Team2Score" min="0" max="20" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" onclick="sendPrediction()">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div><!-- End Prediction Modal-->
+
+@section Scripts {
+<script>
+    function showPredictionModal(title, gameId, team1, team2) {
+        console.log('a');
+        document.getElementById("predictionModalTitle").innerHTML = title;
+        document.getElementById("GameId").value = gameId;
+        document.getElementById("Team1Label").innerHTML = team1;
+        document.getElementById("Team2Label").innerHTML = team2;
+            $("#sendPredictionModal").modal('show');
+    }
+
+    function sendPrediction() {
+        showAlert('Confirmar', '¿Estás seguro que quieres abandonar esta quiniela?', 'warning', true, 'No', 'Sí').then(confirmed => {
+            if (confirmed) {
+                const URL = `/quinielas/leave/${id}`;
+                $.post(URL, function (data) {
+                    if (data) {
+                        showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                            window.location.replace(data.redirectUrl);
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+}
