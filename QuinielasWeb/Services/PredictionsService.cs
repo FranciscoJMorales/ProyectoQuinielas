@@ -7,9 +7,9 @@ namespace QuinielasWeb.Services
     {
         private string Url => baseUrl + "predictions";
 
-        public async Task<UserPrediction?> GetPredictionsByGame(int gameid)
+        public async Task<IEnumerable<UserPrediction>?> GetPredictionsByGame(int gameid)
         {
-            return await Get<UserPrediction?>($"{Url}/byGame/{gameid}");
+            return await Get<IEnumerable<UserPrediction>?>($"{Url}/byGame/{gameid}");
         }
 
         public async Task<Result> SendPrediction(NewPrediction prediction)
