@@ -189,6 +189,9 @@
                                             textColor = "text-warning";
                                         string text = item.Team1Prediction == null ? "Enviar predicción" : "Actualizar predicción";
                                         number++;
+                                        string result = "Todavía no se ha subido el resultado del partido";
+                                        if (item.Team1Score != null)
+                                            result = $"Resultado del partido: {item.Team1Score} - {item.Team2Score}";
                                         <tr>
                                             <td>@number</td>
                                             <td>@item.GameDate.ToString("dd/MM/yyyy HH:mm")</td>
@@ -202,7 +205,7 @@
                                             <td>
                                                 @if (!item.Available)
                                                 {
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#@("predictionsModal" + item.Id)">Ver predicciones</a>
+                                                    <a href="#" onclick="showGamePredictionsModal(@item.Id, '@item.Team1 - @item.Team2', '@result'); return false;">Ver predicciones</a>
                                                 }
                                                 else if (Model.IsParticipant)
                                                 {
@@ -250,7 +253,7 @@
     </div>
 </section>
 
-<!-- Prediction Modal-->
+<!-- Send Prediction Modal-->
 <div class="modal fade" id="sendPredictionModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -284,10 +287,70 @@
             </form>
         </div>
     </div>
-</div><!-- End Prediction Modal-->
+</div><!-- End Send Prediction Modal-->
+
+<!-- Predictions Modal-->
+<div class="modal fade" id="predictionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="predictionsModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title" id="predictionsModalResult"></h5>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Predicción</th>
+                            <th scope="col" class="text-center">Punteo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="predictionsTableBody"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div><!-- End Predictions Modal-->
 
 @section Scripts {
     <script>
+        function showGamePredictionsModal(game, title, result) {
+            const URL = `/predictions/byGame/${game}`;
+            $.get(URL, function (data) {
+                if (data) {
+                    document.getElementById("predictionModalTitle").innerHTML = title;
+                    document.getElementById("predictionModalResult").innerHTML = result;
+                    const table = document.getElementById("predictionsTableBody");
+                    table.innerHTML = null;
+                    data.forEach(item => {
+                        let row = table.insertRow();
+                        let user = row.insertCell(0);
+                        user.innerHTML = item.user;
+                        let prediction = row.insertCell(1);
+                        prediction.innerHTML = `${item.team1Score} - ${item.team2Score}`;
+                        let score = row.insertCell(2);
+                        score.classList.add("text-center");
+                        score.classList.add("fw-bold");
+                        if (item.score != null) {
+                            if (item.score == 0) score.classList.add("text-danger");
+                            else if (item.score == 0) score.classList.add("text-warning");
+                            else score.classList.add("text-success");
+                            score.innerHTML = item.score;
+                        }
+                        else {
+                            score.classList.add("text-secondary");
+                            score.innerHTML = "0";
+                        }
+                    });
+                }
+            });
+        }
+
         function showPredictionModal(title, gameId, team1, team2) {
             document.getElementById("predictionModalTitle").innerHTML = title;
             document.getElementById("GameId").value = gameId;

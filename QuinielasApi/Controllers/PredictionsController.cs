@@ -50,5 +50,22 @@ namespace QuinielasApi.Controllers
                 }
             };
         }
+
+        [Route("byGame/{gameid}")]
+        [HttpGet]
+        public async Task<IEnumerable<UserPrediction>> GetPredictionsByGame(int gameid)
+        {
+            var predictions = await _context.Predictions
+                .Where(p => p.GameId == gameid)
+                .Select(p => new UserPrediction
+                {
+                    GameId = p.GameId,
+                    User = p.User.Username,
+                    Score = p.Score,
+                    Team1Score = (int)p.Team1Score!,
+                    Team2Score = (int)p.Team2Score!
+                }).ToListAsync();
+            return predictions;
+        }
     }
 }

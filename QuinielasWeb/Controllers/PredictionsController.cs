@@ -15,6 +15,16 @@ namespace QuinielasWeb.Controllers
             _predictionsService = predictionsService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ByGame(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var predictions = await _predictionsService.GetPredictionsByGame(id);
+            return new JsonResult(predictions);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Send(NewPrediction prediction)
         {
