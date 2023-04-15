@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using QuinielasApi.Utils;
 using QuinielasModel.DTO;
 using QuinielasModel;
 using QuinielasApi.Models;
 using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Pools;
-using Org.BouncyCastle.Asn1.X509;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.EntityFrameworkCore.Metadata;
 using QuinielasModel.DTO.Users;
-using QuinielasModel.DTO.Games;
 
 namespace QuinielasApi.Controllers
 {

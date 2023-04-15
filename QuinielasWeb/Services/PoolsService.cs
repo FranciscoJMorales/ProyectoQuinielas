@@ -1,5 +1,6 @@
 ﻿using QuinielasModel;
 using QuinielasModel.DTO.Pools;
+using QuinielasModel.DTO.Users;
 
 namespace QuinielasWeb.Services
 {
@@ -37,9 +38,29 @@ namespace QuinielasWeb.Services
             return await Get<IEnumerable<QuinielaView>>($"{Url}/join/{userid}");
         }
 
+        public async Task<PoolUsers?> GetPoolUsers(int poolid)
+        {
+            return await Get<PoolUsers?>($"{Url}/users/{poolid}");
+        }
+
         public async Task<Result> Create(Pool pool)
         {
             return await Post<Result>($"{Url}/create", pool);
+        }
+
+        public async Task<Result> Edit(UpdatePool pool)
+        {
+            return await Put<Result>($"{Url}/edit/{pool.Id}", pool);
+        }
+
+        public async Task<Result> MakePublic(int id)
+        {
+            return await Put<Result>($"{Url}/public/{id}", null);
+        }
+
+        public async Task<Result> MakePrivate(int id, string password)
+        {
+            return await Put<Result>($"{Url}/private/{id}", password);
         }
 
         public async Task<Result> Join(UserPool info)
@@ -47,9 +68,19 @@ namespace QuinielasWeb.Services
             return await Post<Result>($"{Url}/join", info);
         }
 
+        public async Task<Result> Invite(InviteUser invitation)
+        {
+            return await Post<Result>($"{Url}/invite", invitation);
+        }
+
         public async Task<Result> Leave(UserPool info)
         {
             return await Post<Result>($"{Url}/leave", info);
+        }
+
+        public async Task<Result> Remove(int poolid, int userid)
+        {
+            return await Post<Result>($"{Url}/remove/{poolid}/{userid}", null);
         }
 
         public async Task<Result> DeletePool(int id)
