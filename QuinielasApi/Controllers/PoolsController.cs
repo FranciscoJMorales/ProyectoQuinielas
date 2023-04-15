@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Pools;
 using Org.BouncyCastle.Asn1.X509;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore.Metadata;
+using QuinielasModel.DTO.Users;
+using QuinielasModel.DTO.Games;
 
 namespace QuinielasApi.Controllers
 {
@@ -201,6 +204,34 @@ namespace QuinielasApi.Controllers
             return pools;
         }
 
+        [Route("users/{poolid}")]
+        [HttpGet]
+        public async Task<PoolUsers?> GetPoolUsers(int poolid)
+        {
+            var poolModel = await _context.Pools
+                .Where(p => p.Id == poolid && (bool)p.Active!)
+                .FirstOrDefaultAsync();
+            if (poolModel == null)
+                return null;
+            var pool = await _context.Pools
+                .Where(p => p.Id == poolid && (bool)p.Active!)
+                .Select(p => new PoolUsers
+                {
+                    PoolId = p.Id,
+                    AdminId = p.AdminId,
+                    PoolName = p.Name,
+                }).FirstOrDefaultAsync();
+            pool!.Users = await _context.Users
+                .Include(u => u.PoolsNavigation)
+                .Where(u => u.PoolsNavigation.Contains(poolModel))
+                .Select(u => new UserId
+                {
+                    Id = u.Id,
+                    Username = u.Username
+                }).ToListAsync();
+            return pool;
+        }
+
         [Route("create")]
         [HttpPost]
         public async Task<Result> Create(QuinielasModel.Pool pool)
@@ -270,6 +301,66 @@ namespace QuinielasApi.Controllers
             };
         }
 
+        [Route("edit/{id}")]
+        [HttpPut]
+        public async Task<Result> Edit(int id, UpdatePool pool)
+        {
+            var poolModel = await _context.Pools.FindAsync(id);
+            poolModel!.Name = pool.Name;
+            poolModel.UsersLimit = pool.UsersLimit;
+            await _context.SaveChangesAsync();
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Quiniela actualizada",
+                    AlertIcon = "success",
+                    AlertMessage = $"La quiniela {pool.Name} se ha actualizado correctamente",
+                    RedirectUrl = $"/quinielas/quiniela/{poolModel.Id}"
+                }
+            };
+        }
+
+        [Route("public/{id}")]
+        [HttpPut]
+        public async Task<Result> MakePublic(int id)
+        {
+            var pool = await _context.Pools.FindAsync(id);
+            pool!.Private = false;
+            pool.Password = null;
+            await _context.SaveChangesAsync();
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Quiniela actualizada",
+                    AlertIcon = "success",
+                    AlertMessage = $"La quiniela {pool.Name} se ha vuelto pública",
+                    RedirectUrl = $"/quinielas/quiniela/{id}"
+                }
+            };
+        }
+
+        [Route("private/{id}")]
+        [HttpPut]
+        public async Task<Result> MakePrivate(int id, string password)
+        {
+            var pool = await _context.Pools.FindAsync(id);
+            pool!.Private = true;
+            pool.Password = password;
+            await _context.SaveChangesAsync();
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Quiniela actualizada",
+                    AlertIcon = "success",
+                    AlertMessage = $"La quiniela {pool.Name} se ha vuelto privada",
+                    RedirectUrl = $"/quinielas/quiniela/{id}"
+                }
+            };
+        }
+
         [Route("join")]
         [HttpPost]
         public async Task<Result> Join(UserPool info)
@@ -304,6 +395,43 @@ namespace QuinielasApi.Controllers
             };
         }
 
+        [Route("invite")]
+        [HttpPost]
+        public async Task<Result> Invite(InviteUser invitation)
+        {
+            var user = await _context.Users
+                .Where(u => u.Username == invitation.User && (bool)u.Active!)
+                .FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return new Result
+                {
+                    HasError = true,
+                    Alert = new AlertInfo
+                    {
+                        Alert = "Error al agregar usuario",
+                        AlertIcon = "error",
+                        AlertMessage = $"El usuario {invitation.User} no existe",
+                        RedirectUrl = $"/users/pool/{invitation.PoolId}"
+                    }
+                };
+            }
+            var pool = await _context.Pools.FindAsync(invitation.PoolId);
+            pool!.Users.Add(user!);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"User {user!.Username} added to pool {pool.Name}");
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Usuario agregado correctamente",
+                    AlertIcon = "success",
+                    AlertMessage = $"Has agregado al usuario {invitation.User} a la quiniela",
+                    RedirectUrl = $"/users/pool/{invitation.PoolId}"
+                }
+            };
+        }
+
         [Route("leave")]
         [HttpPost]
         public async Task<Result> Leave(UserPool info)
@@ -324,6 +452,30 @@ namespace QuinielasApi.Controllers
                     AlertIcon = "info",
                     AlertMessage = $"Has abandonado la quiniela {pool.Name} correctamente",
                     RedirectUrl = "/quinielas"
+                }
+            };
+        }
+
+        [Route("remove/{poolid}/{userid}")]
+        [HttpPost]
+        public async Task<Result> Remove(int poolid, int userid)
+        {
+            var user = await _context.Users
+                .Include(u => u.PoolsNavigation)
+                .Where(u => u.Id == userid)
+                .FirstOrDefaultAsync();
+            var pool = await _context.Pools.FindAsync(poolid);
+            user!.PoolsNavigation.Remove(pool!);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"User {user.Username} removed from pool {pool!.Name}");
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Operación exitosa",
+                    AlertIcon = "info",
+                    AlertMessage = $"Has expulsado a {user.Username} de la quiniela",
+                    RedirectUrl = $"/users/pool/{poolid}"
                 }
             };
         }
