@@ -244,10 +244,10 @@
                                 </div>
                                 @if (Model.Privada)
                                 {
-                                    <p>Esta quiniela es privada</p>
+                                    <p>Esta quiniela es privada. <a onclick="confirmPublic()">Hacerla pública</a></p>
                                 } else
                                 {
-                                    <p>Esta quiniela es pública</p>
+                                    <p>Esta quiniela es pública. <a onclick="confirmPrivate()">Hacerla privada</a></p>
                                 }
                             </div>
                             <!-- End Admin -->
@@ -409,20 +409,25 @@
                 }
             });
         }
-
-        function confirmDelete() {
-            showAlert('Confirmar', '¿Estás seguro? Esta quiniela será eliminada permanentemente', 'warning', true, 'No', 'Sí').then(confirmed => {
-                if (confirmed) {
-                    const URL = "/quinielas/delete/@Model.Id";
-                    $.post(URL, function (data) {
-                        if (data) {
-                            showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
-                                window.location.replace(data.redirectUrl);
-                            });
-                        }
-                    });
-                }
-            });
-        }
     </script>
+
+    @if (Model.IsAdmin)
+    {
+        <script>
+            function confirmDelete() {
+                showAlert('Confirmar', '¿Estás seguro? Esta quiniela será eliminada permanentemente', 'warning', true, 'No', 'Sí').then(confirmed => {
+                    if (confirmed) {
+                        const URL = "/quinielas/delete/@Model.Id";
+                        $.post(URL, function (data) {
+                            if (data) {
+                                showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                                    window.location.replace(data.redirectUrl);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
+    }
 }
