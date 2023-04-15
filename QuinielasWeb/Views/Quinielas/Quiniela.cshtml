@@ -217,16 +217,38 @@
                                 </tbody>
                             </table>
                             <!-- End Games Table -->
-
+                            <p class="mt-4">Recuerda que la fecha límite para el envío de predicciones es hasta un día antes del partido.</p>
                         </div>
                         <!-- End Games -->
 
                         @if (Model.IsAdmin)
                         {
                             <!-- Admin -->
-
                             <div class="tab-pane fade" id="pool-admin">
                                 <h5 class="card-title">¡Bienvenido al menú de administrador, @(ViewBag.User)!</h5>
+                                <div class="row">
+                                    <div class="col-sm-6 mb-3 text-center">
+                                        <a class="btn btn-primary" href="/games/@Model.Id" style="width:220px">Administrar partidos</a>
+                                    </div>
+                                    <div class="col-sm-6 mb-3 text-center">
+                                        <a class="btn btn-primary" href="/users/@Model.Id" style="width:220px">Administrar participantes</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 mb-3 text-center">
+                                        <a class="btn btn-warning" href="/quinielas/edit/@Model.Id" style="width:220px">Editar quiniela</a>
+                                    </div>
+                                    <div class="col-sm-6 mb-3 text-center">
+                                        <a class="btn btn-danger" href="#" onclick="confirmDelete()" style="width:220px">Eliminar quiniela</a>
+                                    </div>
+                                </div>
+                                @if (Model.Privada)
+                                {
+                                    <p>Esta quiniela es privada</p>
+                                } else
+                                {
+                                    <p>Esta quiniela es pública</p>
+                                }
                             </div>
                             <!-- End Admin -->
                         }
@@ -383,6 +405,21 @@
                         document.getElementById("prediction" + gameId).innerHTML = `${team1Score} - ${team2Score}`;
                         document.getElementById("action" + gameId).innerHTML = "Actualizar predicción";
                         $("#sendPredictionModal").modal('hide');
+                    });
+                }
+            });
+        }
+
+        function confirmDelete() {
+            showAlert('Confirmar', '¿Estás seguro? Esta quiniela será eliminada permanentemente', 'warning', true, 'No', 'Sí').then(confirmed => {
+                if (confirmed) {
+                    const URL = "/quinielas/delete/@Model.Id";
+                    $.post(URL, function (data) {
+                        if (data) {
+                            showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                                window.location.replace(data.redirectUrl);
+                            });
+                        }
                     });
                 }
             });
