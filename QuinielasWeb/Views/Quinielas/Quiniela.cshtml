@@ -351,11 +351,11 @@
                 </div>
                 <form asp-action="Private" asp-route-id="@Model.Id" method="post">
                     <div class="modal-body">
-                        Ingresa la contraseña para la quiniela.
+                        Ingresa la nueva contraseña para la quiniela.
                         <div class="row">
                             <div class="col-sm-12">
                                 <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" name="password">
+                                <input type="password" class="form-control" name="password" required >
                             </div>
                         </div>
                     </div>
