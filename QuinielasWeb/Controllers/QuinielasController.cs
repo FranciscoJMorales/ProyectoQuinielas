@@ -149,6 +149,26 @@ namespace QuinielasWeb.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ChangePassword(int id, string password)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _poolsService.ChangePassword(id, password);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            var pool = await _poolsService.GetPool(id, (int)userid);
+            if (pool == null)
+                return NotFound();
+            if (pool.IsAdmin || pool.IsParticipant)
+                return View("Quiniela", pool);
+            return Unauthorized();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Leave(int id)
         {
             var userid = HttpContext.Session.GetInt32("userid");

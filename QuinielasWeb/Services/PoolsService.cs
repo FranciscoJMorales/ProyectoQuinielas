@@ -68,6 +68,11 @@ namespace QuinielasWeb.Services
             return await Put<Result>($"{Url}/private/{id}", password);
         }
 
+        public async Task<Result> ChangePassword(int id, string password)
+        {
+            return await Put<Result>($"{Url}/password/{id}", password);
+        }
+
         public async Task<Result> Join(UserPool info)
         {
             return await Post<Result>($"{Url}/join", info);

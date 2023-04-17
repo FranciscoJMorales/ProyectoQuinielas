@@ -373,6 +373,25 @@ namespace QuinielasApi.Controllers
             };
         }
 
+        [Route("password/{id}")]
+        [HttpPut]
+        public async Task<Result> ChangePassword(int id, [FromBody] string password)
+        {
+            var pool = await _context.Pools.FindAsync(id);
+            pool!.Password = password;
+            await _context.SaveChangesAsync();
+            return new Result
+            {
+                Alert = new AlertInfo
+                {
+                    Alert = "Quiniela actualizada",
+                    AlertIcon = "success",
+                    AlertMessage = $"Se ha actualizado la contraseña de la quiniela {pool.Name}",
+                    RedirectUrl = $"/quinielas/quiniela/{id}"
+                }
+            };
+        }
+
         [Route("join")]
         [HttpPost]
         public async Task<Result> Join(UserPool info)

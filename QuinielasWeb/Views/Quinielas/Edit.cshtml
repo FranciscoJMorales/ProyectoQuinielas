@@ -1,15 +1,16 @@
 ﻿@model QuinielasModel.DTO.Pools.UpdatePool
 
 @{
-    ViewData["Title"] = "Editar quiniela";
+    ViewData["Title"] = $"{Model.Name} - Editar";
 }
 
 <div class="pagetitle">
-    <h1>Editar quiniela</h1>
+    <h1>@Model.Name - Editar</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/dashboard">Inicio</a></li>
             <li class="breadcrumb-item">Quinielas</li>
+            <li class="breadcrumb-item"><a href="/quinielas/quiniela/@Model.Id">@Model.Name</a></li>
             <li class="breadcrumb-item active">Editar Quiniela</li>
         </ol>
     </nav>
@@ -45,5 +46,5 @@
 </section>
 
 <div>
-    <a asp-action="Mine">Volver al administrador de quinielas</a>
+    <a href="/quinielas/quiniela/@Model.Id" class="mt-3">Volver a la quiniela</a>
 </div>

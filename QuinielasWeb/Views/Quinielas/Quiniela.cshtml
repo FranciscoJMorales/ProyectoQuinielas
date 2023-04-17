@@ -125,7 +125,7 @@
                                                 document.addEventListener("DOMContentLoaded", () => {
                                                     new ApexCharts(document.querySelector("#columnChart"), {
                                                         series: [{
-                                                            name: "Participantes",
+                                                            name: "Puntuación",
                                                             data: @Json.Serialize(Model.UsersScore!.ConvertAll(item => item.Puntuación))
                                                         }],
                                                         chart: {
@@ -290,6 +290,7 @@
                                 @if (Model.Privada)
                                 {
                                     <p>Esta quiniela es privada. <a href="#" onclick="confirmPublic()">Hacerla pública</a></p>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#passwordModal">Cambiar contraseña</a>
                                 } else
                                 {
                                     <p>Esta quiniela es pública. <a href="#" onclick="confirmPrivate()">Hacerla privada</a></p>
@@ -413,6 +414,34 @@
         </div>
     </div>
     <!-- End Private Modal-->
+
+    <!-- Password Modal-->
+    <div class="modal fade" id="passwordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambiar contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="ChangePassword" asp-route-id="@Model.Id" method="post">
+                    <div class="modal-body">
+                        Ingresa la nueva contraseña para la quiniela.
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Password Modal-->
 }
 
 @section Scripts {
