@@ -124,10 +124,27 @@ namespace QuinielasApi.Controllers
         [HttpGet]
         public async Task<PoolId?> GetPoolId(int id)
         {
-            var pool = await _context.Pools.Where(p => p.Id == id && (bool)p.Active!).FirstOrDefaultAsync();
+            var pool = await _context.Pools
+                .Where(p => p.Id == id && (bool)p.Active!)
+                .FirstOrDefaultAsync();
             if (pool == null)
                 return null;
             return Mapper.ToModel(pool);
+        }
+
+        [Route("updateInfo/{id}")]
+        [HttpGet]
+        public async Task<UpdatePool?> GetPoolUpdateInfo(int id)
+        {
+            var pool = await _context.Pools
+                .Where(p => p.Id == id && (bool)p.Active!)
+                .Select(p => new UpdatePool
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    UsersLimit = p.UsersLimit
+                }).FirstOrDefaultAsync();
+            return pool;
         }
 
         [Route("other/{userid}")]
@@ -338,7 +355,7 @@ namespace QuinielasApi.Controllers
 
         [Route("private/{id}")]
         [HttpPut]
-        public async Task<Result> MakePrivate(int id, string password)
+        public async Task<Result> MakePrivate(int id, [FromBody] string password)
         {
             var pool = await _context.Pools.FindAsync(id);
             pool!.Private = true;

@@ -231,7 +231,7 @@
                                         <a class="btn btn-primary" href="/games/@Model.Id" style="width:220px">Administrar partidos</a>
                                     </div>
                                     <div class="col-sm-6 mb-3 text-center">
-                                        <a class="btn btn-primary" href="/users/@Model.Id" style="width:220px">Administrar participantes</a>
+                                        <a class="btn btn-primary" href="/users/pool/@Model.Id" style="width:220px">Administrar participantes</a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -244,10 +244,10 @@
                                 </div>
                                 @if (Model.Privada)
                                 {
-                                    <p>Esta quiniela es privada. <a onclick="confirmPublic()">Hacerla pública</a></p>
+                                    <p>Esta quiniela es privada. <a href="#" onclick="confirmPublic()">Hacerla pública</a></p>
                                 } else
                                 {
-                                    <p>Esta quiniela es pública. <a onclick="confirmPrivate()">Hacerla privada</a></p>
+                                    <p>Esta quiniela es pública. <a href="#" onclick="confirmPrivate()">Hacerla privada</a></p>
                                 }
                             </div>
                             <!-- End Admin -->
@@ -339,6 +339,37 @@
     </div>
 </div><!-- End Predictions Modal-->
 
+@if (Model.IsAdmin)
+{
+    <!-- Private Modal-->
+    <div class="modal fade" id="privateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hacer privada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="Private" asp-route-id="@Model.Id" method="post">
+                    <div class="modal-body">
+                        Ingresa la contraseña para la quiniela.
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Hacer privada</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Private Modal-->
+}
+
 @section Scripts {
     <script>
         function showGamePredictionsModal(game, title, result) {
@@ -425,6 +456,29 @@
                                 });
                             }
                         });
+                    }
+                });
+            }
+
+            function confirmPublic() {
+                showAlert('Confirmar', '¿Estás seguro? Cualquier usuario podrá unirse a esta quiniela', 'warning', true, 'No', 'Sí').then(confirmed => {
+                    if (confirmed) {
+                        const URL = "/quinielas/public/@Model.Id";
+                        $.post(URL, function (data) {
+                            if (data) {
+                                showAlert(data.alert, data.alertMessage, data.alertIcon, false, '', 'Aceptar').then(confirmed => {
+                                    window.location.replace(data.redirectUrl);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            function confirmPrivate() {
+                showAlert('Confirmar', '¿Estás seguro? Únicamente los usuarios con la contraseña podrán unirse', 'warning', true, 'No', 'Sí').then(confirmed => {
+                    if (confirmed) {
+                        $("#privateModal").modal('show');
                     }
                 });
             }

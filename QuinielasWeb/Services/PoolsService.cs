@@ -48,6 +48,11 @@ namespace QuinielasWeb.Services
             return await Post<Result>($"{Url}/create", pool);
         }
 
+        public async Task<UpdatePool?> GetPoolUpdateInfo(int id)
+        {
+            return await Get<UpdatePool?>($"{Url}/updateInfo/{id}");
+        }
+
         public async Task<Result> Edit(UpdatePool pool)
         {
             return await Put<Result>($"{Url}/edit/{pool.Id}", pool);

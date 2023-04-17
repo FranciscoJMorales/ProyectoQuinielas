@@ -92,6 +92,61 @@ namespace QuinielasWeb.Controllers
             return View(pool);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            ViewBag.User = HttpContext.Session.GetString("username");
+            var pool = await _poolsService.GetPoolUpdateInfo(id);
+            return View(pool);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdatePool pool)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _poolsService.Edit(pool);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            return View(pool);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Public(int id)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _poolsService.MakePublic(id);
+            return new JsonResult(result.Alert);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Private(int id, string password)
+        {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
+            var result = await _poolsService.MakePrivate(id, password);
+            ViewBag.User = HttpContext.Session.GetString("username");
+            ViewBag.Alert = result.Alert!.Alert;
+            ViewBag.AlertIcon = result.Alert.AlertIcon;
+            ViewBag.AlertMessage = result.Alert.AlertMessage;
+            ViewBag.RedirectUrl = result.Alert.RedirectUrl;
+            var pool = await _poolsService.GetPool(id, (int)userid);
+            if (pool == null)
+                return NotFound();
+            if (pool.IsAdmin || pool.IsParticipant)
+                return View("Quiniela", pool);
+            return Unauthorized();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Leave(int id)
