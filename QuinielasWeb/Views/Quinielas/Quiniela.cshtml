@@ -112,6 +112,51 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Posiciones</h5>
+
+                                            <!-- Column Chart -->
+                                            <div id="columnChart"></div>
+
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", () => {
+                                                    new ApexCharts(document.querySelector("#columnChart"), {
+                                                        series: [{
+                                                            name: "Participantes",
+                                                            data: @Json.Serialize(Model.UsersScore!.ConvertAll(item => item.Puntuación))
+                                                        }],
+                                                        chart: {
+                                                            height: 300,
+                                                            type: 'bar',
+                                                            toolbar: {
+                                                                show: true
+                                                            }
+                                                        },
+                                                        plotOptions: {
+                                                            bar: {
+                                                                horizontal: false
+                                                            }
+                                                        },
+                                                        xaxis: {
+                                                            categories: @Json.Serialize(Model.UsersScore!.ConvertAll(item => item.Usuario)),
+                                                        },
+                                                        yaxis: {
+                                                            title: {
+                                                                text: 'Puntuación'
+                                                            }
+                                                        }
+                                                    }).render();
+                                                });
+                                            </script>
+                                            <!-- End Column Chart -->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <!-- End Dashboard -->
