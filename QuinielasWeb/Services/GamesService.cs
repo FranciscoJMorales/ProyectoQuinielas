@@ -1,10 +1,13 @@
 ﻿using QuinielasModel;
 using QuinielasModel.DTO.Games;
+using System.Transactions;
 
 namespace QuinielasWeb.Services
 {
     public class GamesService : ApiService
     {
+        public GamesService(IHttpContextAccessor accessor) : base(accessor) {}
+
         private string Url => baseUrl + "games";
 
         public async Task<NewGame?> GetGame(int id)

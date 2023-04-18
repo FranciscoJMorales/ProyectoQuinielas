@@ -5,11 +5,14 @@ using QuinielasModel;
 using QuinielasApi.Utils;
 using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuinielasApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;

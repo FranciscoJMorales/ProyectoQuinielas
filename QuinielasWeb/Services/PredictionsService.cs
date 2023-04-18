@@ -5,6 +5,8 @@ namespace QuinielasWeb.Services
 {
     public class PredictionsService : ApiService
     {
+        public PredictionsService(IHttpContextAccessor accessor) : base(accessor) { }
+
         private string Url => baseUrl + "predictions";
 
         public async Task<IEnumerable<UserPrediction>?> GetPredictionsByGame(int gameid)

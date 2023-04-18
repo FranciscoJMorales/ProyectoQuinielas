@@ -8,6 +8,8 @@ namespace QuinielasWeb.Services
 {
     public class UsersService : ApiService
     {
+        public UsersService(IHttpContextAccessor accessor) : base(accessor) { }
+
         private string Url => baseUrl + "users";
 
         public async Task<User> GetUser(int id)

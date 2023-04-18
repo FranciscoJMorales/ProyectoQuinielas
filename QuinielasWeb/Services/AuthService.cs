@@ -11,6 +11,8 @@ namespace QuinielasWeb.Services
 {
     public class AuthService : ApiService
     {
+        public AuthService(IHttpContextAccessor accessor) : base(accessor) { }
+
         private string Url => baseUrl + "auth";
 
         public async Task<UserToken> Login(UserAuth userCreds)

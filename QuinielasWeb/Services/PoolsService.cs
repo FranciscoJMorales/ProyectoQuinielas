@@ -6,6 +6,8 @@ namespace QuinielasWeb.Services
 {
     public class PoolsService : ApiService
     {
+        public PoolsService(IHttpContextAccessor accessor) : base(accessor) { }
+
         private string Url => baseUrl + "pools";
 
         public async Task<QuinielaFull?> GetPool(int id, int userid)
