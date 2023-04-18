@@ -47,6 +47,7 @@ namespace QuinielasWeb.Controllers
             }
             HttpContext.Session.SetInt32("userid", user.Id);
             HttpContext.Session.SetString("username", user.Username);
+            HttpContext.Session.SetString("token", user.Token);
             return RedirectToAction("dashboard");
         }
 
@@ -73,6 +74,7 @@ namespace QuinielasWeb.Controllers
             {
                 HttpContext.Session.SetInt32("userid", user.Id);
                 HttpContext.Session.SetString("username", user.Username);
+                HttpContext.Session.SetString("token", user.Token);
             }
             ViewBag.Alert = user.Alert!.Alert;
             ViewBag.AlertIcon = user.Alert.AlertIcon;

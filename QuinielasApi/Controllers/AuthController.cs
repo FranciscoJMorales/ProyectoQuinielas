@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QuinielasApi.Models;
 using QuinielasApi.Utils;
 using QuinielasModel;
-using QuinielasModel.DTO;
 using QuinielasModel.DTO.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace QuinielasApi.Controllers
 {
@@ -15,23 +18,25 @@ namespace QuinielasApi.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly QuinielasContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(ILogger<AuthController> logger, QuinielasContext context)
+        public AuthController(ILogger<AuthController> logger, QuinielasContext context, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [Route("login")]
         [HttpPost]
-        public async Task<UserId> Login(UserAuth userCreds)
+        public async Task<UserToken> Login(UserAuth userCreds)
         {
             var user = await _context.Users
                             .Where(u => (u.Username == userCreds.UserEmail || u.Email == userCreds.UserEmail) && (bool)u.Active!)
                             .FirstOrDefaultAsync();
             if (user == null)
             {
-                return new UserId
+                return new UserToken
                 {
                     HasError = true,
                     Alert = new AlertInfo
@@ -45,13 +50,14 @@ namespace QuinielasApi.Controllers
             if (Encryption.ComparePasswords(user.Password, userCreds.Password))
             {
                 _logger.LogInformation($"{user.Username} logged in succesfully!");
-                return new UserId
+                return new UserToken
                 {
                     Id = user.Id,
-                    Username = user.Username
+                    Username = user.Username,
+                    Token = CustomTokenJWT(user.Username)
                 };
             }
-            return new UserId
+            return new UserToken
             {
                 HasError = true,
                 Alert = new AlertInfo
@@ -65,14 +71,14 @@ namespace QuinielasApi.Controllers
 
         [Route("register")]
         [HttpPost]
-        public async Task<UserId> Register(UserRegister userInfo)
+        public async Task<UserToken> Register(UserRegister userInfo)
         {
             var usernameExists = await _context.Users
                 .Where(u => u.Username == userInfo.Username && (bool)u.Active!)
                 .FirstOrDefaultAsync();
             if (usernameExists != null)
             {
-                return new UserId
+                return new UserToken
                 {
                     HasError = true,
                     Alert = new AlertInfo
@@ -88,7 +94,7 @@ namespace QuinielasApi.Controllers
                 .FirstOrDefaultAsync();
             if (emailExists != null)
             {
-                return new UserId
+                return new UserToken
                 {
                     HasError = true,
                     Alert = new AlertInfo
@@ -103,10 +109,11 @@ namespace QuinielasApi.Controllers
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"{user.Username} registered succesfully!");
-            return new UserId
+            return new UserToken
             {
                 Id = user.Id,
                 Username = user.Username,
+                Token = CustomTokenJWT(user.Username),
                 Alert = new AlertInfo
                 {
                     Alert = $"¡Bienvenido {user.Username}!",
@@ -115,6 +122,30 @@ namespace QuinielasApi.Controllers
                     RedirectUrl = "/dashboard"
                 }
             };
+        }
+
+        private string CustomTokenJWT(string username)
+        {
+            var _symmetricSecurityKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]!)
+            );
+            var _signingCredentials = new SigningCredentials(
+                _symmetricSecurityKey, SecurityAlgorithms.HmacSha256
+            );
+            var _Header = new JwtHeader(_signingCredentials);
+            var _Claims = new[] {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, username)
+            };
+            var _Payload = new JwtPayload(
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
+                claims: _Claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddHours(2)
+            );
+            var _Token = new JwtSecurityToken(_Header, _Payload);
+            return new JwtSecurityTokenHandler().WriteToken(_Token);
         }
     }
 }
