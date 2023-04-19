@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Newtonsoft.Json;
-using System.Text;
-using QuinielasModel;
+﻿using QuinielasModel;
 using QuinielasModel.DTO.Users;
+using QuinielasModel.DTO;
 
 namespace QuinielasWeb.Services
 {
@@ -15,6 +13,11 @@ namespace QuinielasWeb.Services
         public async Task<User> GetUser(int id)
         {
             return await Get<User>($"{Url}/{id}");
+        }
+
+        public async Task<Report?> GetUserReport(int id)
+        {
+            return await Get<Report?>($"{Url}/report/{id}");
         }
 
         public async Task<Result> Update(UpdateUser user)

@@ -10,11 +10,13 @@ namespace QuinielasWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AuthService _authService;
+        private readonly UsersService _usersService;
 
-        public HomeController(ILogger<HomeController> logger, AuthService authService)
+        public HomeController(ILogger<HomeController> logger, AuthService authService, UsersService usersService)
         {
             _logger = logger;
             _authService = authService;
+            _usersService = usersService;
         }
 
         [Route("/")]
@@ -93,13 +95,14 @@ namespace QuinielasWeb.Controllers
 
         [Route("/dashboard")]
         [HttpGet]
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
             var userid = HttpContext.Session.GetInt32("userid");
             if (userid == null)
                 return RedirectToAction("login", "Home");
             ViewBag.User = HttpContext.Session.GetString("username");
-            return View();
+            var report = await _usersService.GetUserReport((int)userid);
+            return View(report);
         }
 
         public IActionResult Privacy()
