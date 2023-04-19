@@ -450,8 +450,25 @@ namespace QuinielasApi.Controllers
                     }
                 };
             }
-            var pool = await _context.Pools.FindAsync(invitation.PoolId);
-            pool!.Users.Add(user!);
+            var pool = await _context.Pools
+                .Include(p => p.Users)
+                .Where(p => p.Id == invitation.PoolId && (bool)p.Active!)
+                .FirstOrDefaultAsync();
+            if (pool!.Users.Contains(user))
+            {
+                return new Result
+                {
+                    HasError = true,
+                    Alert = new AlertInfo
+                    {
+                        Alert = "El usuario ya es participante",
+                        AlertIcon = "info",
+                        AlertMessage = $"El usuario {invitation.User} ya es participante de la quiniela",
+                        RedirectUrl = $"/users/pool/{invitation.PoolId}"
+                    }
+                };
+            }
+            pool.Users.Add(user!);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"User {user!.Username} added to pool {pool.Name}");
             return new Result
