@@ -62,7 +62,7 @@ namespace QuinielasApi.Controllers
                     .Select(u => new UserScore
                     {
                         Usuario = u.Username,
-                        Puntuación = (int)u.Predictions.Sum(p => p.Score)!
+                        Puntuación = (int)u.Predictions.Where(pr => pr.Game.Pool.Id == id).Sum(p => p.Score)!
                     }).OrderByDescending(s => s.Puntuación)
                     .ToListAsync();
                 pool.Partidos = await _context.Games
