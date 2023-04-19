@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuinielasApi.Models;
 using QuinielasApi.Utils;
 using QuinielasModel;
 using QuinielasModel.DTO.Games;
-using QuinielasModel.DTO.Pools;
 
 namespace QuinielasApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GamesController : ControllerBase
     {
         private readonly ILogger<GamesController> _logger;

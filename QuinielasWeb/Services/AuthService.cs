@@ -17,12 +17,12 @@ namespace QuinielasWeb.Services
 
         public async Task<UserToken> Login(UserAuth userCreds)
         {
-            return await Post<UserToken>($"{Url}/login", userCreds);
+            return await PostNoAuth<UserToken>($"{Url}/login", userCreds);
         }
 
         public async Task<UserToken> Register(UserRegister userInfo)
         {
-            return await Post<UserToken>($"{Url}/register", userInfo);
+            return await PostNoAuth<UserToken>($"{Url}/register", userInfo);
         }
     }
 }

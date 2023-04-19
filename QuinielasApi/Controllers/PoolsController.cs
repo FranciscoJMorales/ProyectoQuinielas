@@ -6,11 +6,14 @@ using QuinielasApi.Models;
 using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Pools;
 using QuinielasModel.DTO.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuinielasApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PoolsController : ControllerBase
     {
         private readonly ILogger<PoolsController> _logger;
