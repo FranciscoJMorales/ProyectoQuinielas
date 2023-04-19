@@ -7,12 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using QuinielasModel.DTO.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using QuinielasModel.DTO;
+using QuinielasModel.DTO.Pools;
+using Microsoft.IdentityModel.Tokens;
 
 namespace QuinielasApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -136,6 +139,37 @@ namespace QuinielasApi.Controllers
                     RedirectUrl = "/"
                 }
             };
+        }
+
+        [Route("report/{id}")]
+        [HttpGet]
+        public async Task<Report?> GetUserReport(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return null;
+            var report = await _context.Users
+                .Include(u => u.Pools)
+                .Include(u => u.PoolsNavigation)
+                .Include(u => u.Predictions)
+                .Where(u => u.Id == id)
+                .Select(u => new Report
+                {
+                    UserId = u.Id,
+                    OwnedPools = u.Pools.Where(p => (bool)p.Active!).Count(),
+                    ParticipantPools = u.PoolsNavigation.Where(p => (bool)p.Active!).Count(),
+                    PredictionsSent = u.Predictions.Where(p => (bool)p.Active!).Count(),
+                    TotalScore = (int)u.Predictions.Where(p => (bool)p.Active!).Sum(pr => pr.Score)!
+                }).FirstAsync();
+            report.Scores = await _context.Pools
+                .Include(p => p.Users)
+                .Where(p => p.Users.Contains(user))
+                .Select(p => new PoolScore
+                {
+                    Pool = p.Name,
+                    Score = (int)p.Users.Where(u => u.Id == id).First().Predictions.Where(pr => p.Games.Contains(pr.Game)).Sum(pr => pr.Score)!
+                }).ToListAsync();
+            return report;
         }
     }
 }
