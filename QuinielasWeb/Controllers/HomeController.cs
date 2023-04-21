@@ -32,6 +32,9 @@ namespace QuinielasWeb.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid != null)
+                return RedirectToAction("dashboard");
             return View();
         }
 
@@ -57,6 +60,9 @@ namespace QuinielasWeb.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid != null)
+                return RedirectToAction("dashboard");
             return View();
         }
 
