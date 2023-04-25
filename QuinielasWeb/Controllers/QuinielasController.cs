@@ -3,9 +3,11 @@ using QuinielasWeb.Services;
 using QuinielasModel;
 using QuinielasModel.DTO.Pools;
 using QuinielasModel.DTO.Predictions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuinielasWeb.Controllers
 {
+    [Authorize]
     public class QuinielasController : Controller
     {
         private readonly ILogger<QuinielasController> _logger;

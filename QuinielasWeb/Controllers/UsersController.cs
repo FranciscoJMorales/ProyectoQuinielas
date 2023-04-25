@@ -2,9 +2,12 @@
 using QuinielasWeb.Services;
 using QuinielasModel.DTO.Users;
 using QuinielasModel.DTO.Pools;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 
 namespace QuinielasWeb.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ILogger<UsersController> _logger;
@@ -107,6 +110,7 @@ namespace QuinielasWeb.Controllers
                 return RedirectToAction("login", "Home");
             var result = await _usersService.DeleteUser(id);
             HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();
             return new JsonResult(result.Alert);
         }
 

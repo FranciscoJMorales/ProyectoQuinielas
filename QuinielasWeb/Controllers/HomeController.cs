@@ -3,6 +3,10 @@ using QuinielasWeb.Models;
 using QuinielasWeb.Services;
 using System.Diagnostics;
 using QuinielasModel.DTO.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace QuinielasWeb.Controllers
 {
@@ -20,6 +24,7 @@ namespace QuinielasWeb.Controllers
         }
 
         [Route("/")]
+        [Authorize]
         public IActionResult Index()
         {
             var userid = HttpContext.Session.GetInt32("userid");
@@ -53,6 +58,14 @@ namespace QuinielasWeb.Controllers
             HttpContext.Session.SetInt32("userid", user.Id);
             HttpContext.Session.SetString("username", user.Username);
             HttpContext.Session.SetString("token", user.Token);
+            var claims = new List<Claim>
+            {
+                new Claim("username", user.Username),
+                new Claim("TokenAPI", user.Token)
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            await HttpContext.SignInAsync(claimsPrincipal);
             return RedirectToAction("dashboard");
         }
 
@@ -83,6 +96,14 @@ namespace QuinielasWeb.Controllers
                 HttpContext.Session.SetInt32("userid", user.Id);
                 HttpContext.Session.SetString("username", user.Username);
                 HttpContext.Session.SetString("token", user.Token);
+                var claims = new List<Claim>
+                {
+                    new Claim("username", user.Username),
+                    new Claim("TokenAPI", user.Token)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync(claimsPrincipal);
             }
             ViewBag.Alert = user.Alert!.Alert;
             ViewBag.AlertIcon = user.Alert.AlertIcon;
@@ -92,14 +113,17 @@ namespace QuinielasWeb.Controllers
         }
 
         [Route("/logout")]
+        [Authorize]
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();
             return RedirectToAction("login", "Home");
         }
 
         [Route("/dashboard")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
@@ -111,8 +135,12 @@ namespace QuinielasWeb.Controllers
             return View(report);
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
+            var userid = HttpContext.Session.GetInt32("userid");
+            if (userid == null)
+                return RedirectToAction("login", "Home");
             return View();
         }
 

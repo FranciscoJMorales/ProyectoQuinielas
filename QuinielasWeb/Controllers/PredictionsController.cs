@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuinielasModel.DTO.Predictions;
 using QuinielasWeb.Services;
 
 namespace QuinielasWeb.Controllers
 {
+    [Authorize]
     public class PredictionsController : Controller
     {
         private readonly ILogger<PredictionsController> _logger;

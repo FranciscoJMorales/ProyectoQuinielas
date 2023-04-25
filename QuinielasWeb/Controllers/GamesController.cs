@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuinielasModel.DTO.Games;
 using QuinielasModel.DTO.Pools;
 using QuinielasWeb.Services;
 
 namespace QuinielasWeb.Controllers
 {
+    [Authorize]
     public class GamesController : Controller
     {
         private readonly ILogger<GamesController> _logger;

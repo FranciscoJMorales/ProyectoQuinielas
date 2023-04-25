@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using QuinielasWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +19,27 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.Name = "Quinielas.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllOrigins",
+        builder =>
+        {
+            builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+        });
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(options =>
+               {
+                   options.Cookie.SameSite = SameSiteMode.None;
+                   options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                   options.LoginPath = "/Login"; /*this option indicates where is the login page*/
+               });
 
 var app = builder.Build();
 
@@ -39,6 +58,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
