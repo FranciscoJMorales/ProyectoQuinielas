@@ -158,12 +158,12 @@ namespace QuinielasApi.Controllers
                     UserId = u.Id,
                     OwnedPools = u.Pools.Where(p => (bool)p.Active!).Count(),
                     ParticipantPools = u.PoolsNavigation.Where(p => (bool)p.Active!).Count(),
-                    PredictionsSent = u.Predictions.Where(p => (bool)p.Active!).Count(),
-                    TotalScore = (int)u.Predictions.Where(p => (bool)p.Active!).Sum(pr => pr.Score)!
+                    PredictionsSent = u.Predictions.Where(p => (bool)p.Active! && (bool)p.Game.Pool.Active!).Count(),
+                    TotalScore = (int)u.Predictions.Where(p => (bool)p.Active! && (bool)p.Game.Pool.Active!).Sum(pr => pr.Score)!
                 }).FirstAsync();
             report.Scores = await _context.Pools
                 .Include(p => p.Users)
-                .Where(p => p.Users.Contains(user))
+                .Where(p => p.Users.Contains(user) && (bool)p.Active!)
                 .Select(p => new PoolScore
                 {
                     Pool = p.Name,

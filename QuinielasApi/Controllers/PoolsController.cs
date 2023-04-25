@@ -269,7 +269,9 @@ namespace QuinielasApi.Controllers
                     };
                 }
             }
-            var poolExists = await _context.Pools.Where(p => p.Name == pool.Name && p.AdminId == pool.AdminId && (bool)p.Active!).FirstOrDefaultAsync();
+            var poolExists = await _context.Pools
+                .Where(p => p.Name == pool.Name && p.AdminId == pool.AdminId && (bool)p.Active!)
+                .FirstOrDefaultAsync();
             if (poolExists != null)
             {
                 return new Result
@@ -320,8 +322,40 @@ namespace QuinielasApi.Controllers
         [HttpPut]
         public async Task<Result> Edit(int id, UpdatePool pool)
         {
-            var poolModel = await _context.Pools.FindAsync(id);
-            poolModel!.Name = pool.Name;
+            var poolModel = await _context.Pools
+                .Include(p => p.Users)
+                .Where(p => p.Id == id && (bool)p.Active!)
+                .FirstOrDefaultAsync();
+            var poolExists = await _context.Pools
+                .Where(p => p.Name == pool.Name && p.AdminId == poolModel!.AdminId && (bool)p.Active! && p.Id != id)
+                .FirstOrDefaultAsync();
+            if (poolExists != null)
+            {
+                return new Result
+                {
+                    HasError = true,
+                    Alert = new AlertInfo
+                    {
+                        Alert = "Error al editar quiniela",
+                        AlertIcon = "error",
+                        AlertMessage = "Ya creaste una quiniela con el mismo nombre"
+                    }
+                };
+            }
+            if (pool.UsersLimit < poolModel!.Users.Count)
+            {
+                return new Result
+                {
+                    HasError = true,
+                    Alert = new AlertInfo
+                    {
+                        Alert = "Error al editar quiniela",
+                        AlertIcon = "error",
+                        AlertMessage = "El limite de usuarios no puede ser menor a la cantidad de usuarios actual"
+                    }
+                };
+            }
+            poolModel.Name = pool.Name;
             poolModel.UsersLimit = pool.UsersLimit;
             await _context.SaveChangesAsync();
             return new Result

@@ -371,7 +371,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Usuario</th>
-                            <th scope="col">Predicción</th>
+                            <th scope="col" class="text-center">Predicción</th>
                             <th scope="col" class="text-center">Punteo</th>
                         </tr>
                     </thead>
@@ -459,6 +459,7 @@
                         let user = row.insertCell(0);
                         user.innerHTML = item.user;
                         let prediction = row.insertCell(1);
+                        prediction.classList.add("text-center");
                         prediction.innerHTML = `${item.team1Score} - ${item.team2Score}`;
                         let score = row.insertCell(2);
                         score.classList.add("text-center");
