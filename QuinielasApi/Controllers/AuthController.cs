@@ -27,6 +27,12 @@ namespace QuinielasApi.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet]
+        public IActionResult Test()
+        {
+            return Ok("Funciona");
+        }
+
         [Route("login")]
         [HttpPost]
         public async Task<UserToken> Login(UserAuth userCreds)
