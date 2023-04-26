@@ -8,11 +8,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddSingleton<AuthService>();
-builder.Services.AddSingleton<UsersService>();
-builder.Services.AddSingleton<PoolsService>();
-builder.Services.AddSingleton<GamesService>();
-builder.Services.AddSingleton<PredictionsService>();
+builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<UsersService>();
+builder.Services.AddTransient<PoolsService>();
+builder.Services.AddTransient<GamesService>();
+builder.Services.AddTransient<PredictionsService>();
 
 builder.Services.AddDistributedMemoryCache();
 
