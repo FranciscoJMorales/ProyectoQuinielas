@@ -7,7 +7,7 @@ public class ApiService
 {
     protected readonly HttpClient _client = new();
     protected readonly HttpClientHandler _clientHandler = new();
-    protected readonly string baseUrl = "https://localhost:7242/";
+    protected readonly string baseUrl = "https://localhost/QuinielasApi/";
     private readonly IHttpContextAccessor _accessor;
 
     public ApiService(IHttpContextAccessor accessor)
@@ -24,7 +24,7 @@ public class ApiService
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         var response = await _client.GetAsync(path);
         int statusCode = (int)response.StatusCode;
-        if (statusCode >= 200 && statusCode < 300)
+        if (statusCode >= 200 && statusCode < 500)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
@@ -45,7 +45,7 @@ public class ApiService
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         var response = await _client.PostAsync(path, content);
         int statusCode = (int)response.StatusCode;
-        if (statusCode >= 200 && statusCode < 300)
+        if (statusCode >= 200 && statusCode < 500)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
@@ -66,7 +66,7 @@ public class ApiService
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         var response = await _client.PutAsync(path, content);
         int statusCode = (int)response.StatusCode;
-        if (statusCode >= 200 && statusCode < 300)
+        if (statusCode >= 200 && statusCode < 500)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
@@ -85,7 +85,7 @@ public class ApiService
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         var response = await _client.DeleteAsync(path);
         int statusCode = (int)response.StatusCode;
-        if (statusCode >= 200 && statusCode < 300)
+        if (statusCode >= 200 && statusCode < 500)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
@@ -102,7 +102,7 @@ public class ApiService
         _clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
         var response = await _client.PostAsync(path, content);
         int statusCode = (int)response.StatusCode;
-        if (statusCode >= 200 && statusCode < 300)
+        if (statusCode >= 200 && statusCode < 500)
         {
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync())!;
         }
