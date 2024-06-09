@@ -37,7 +37,8 @@ namespace QuinielasApi.Controllers
                     PoolName = g.Pool.Name,
                     Team1 = g.Team1,
                     Team2 = g.Team2,
-                    GameDate = g.GameDate
+                    GameDate = g.GameDate,
+                    Deadline = g.Deadline,
                 }).FirstOrDefaultAsync();
             return game;
         }
@@ -63,6 +64,7 @@ namespace QuinielasApi.Controllers
                     PoolId = g.PoolId,
                     Active = g.Active,
                     GameDate = g.GameDate,
+                    Deadline = g.Deadline,
                     Id = g.Id,
                     PoolName = g.Pool.Name,
                     Team1 = g.Team1,
@@ -103,6 +105,7 @@ namespace QuinielasApi.Controllers
             game!.Team1 = newGame.Team1;
             game.Team2 = newGame.Team2;
             game.GameDate = newGame.GameDate;
+            game.Deadline = newGame.Deadline;
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Game {newGame.Team1} - {newGame.Team2} updated");
             return new Result

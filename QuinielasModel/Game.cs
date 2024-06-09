@@ -26,5 +26,8 @@ public class Game : Result
     [DisplayName("Fecha")]
     public DateTime GameDate { get; set; }
 
+    [DisplayName("Fecha límite para predicciones")]
+    public DateTime Deadline { get; set; }
+
     public bool? Active { get; set; }
 }

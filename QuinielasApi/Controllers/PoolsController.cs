@@ -71,6 +71,7 @@ namespace QuinielasApi.Controllers
                     {
                         Id = g.Id,
                         GameDate = g.GameDate,
+                        Deadline = g.Deadline,
                         Team1 = g.Team1,
                         Team2 = g.Team2,
                         Team1Score = g.Team1Score,
@@ -96,8 +97,7 @@ namespace QuinielasApi.Controllers
                 foreach (var item in pool.Partidos)
                 {
                     //Check if game is available
-                    var lastDate = new DateTime(item.GameDate.Year, item.GameDate.Month, item.GameDate.Day);
-                    if (item.Team1Score == null && DateTime.Now < lastDate)
+                    if (item.Team1Score == null && DateTime.Now <= item.Deadline)
                         item.Available = true;
 
                     //Set user prediction and score

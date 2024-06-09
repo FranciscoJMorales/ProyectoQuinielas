@@ -49,6 +49,7 @@ public static class Mapper
         {
             Id = game.Id,
             GameDate = game.GameDate,
+            Deadline = game.Deadline,
             PoolId = game.PoolId,
             Team1 = game.Team1,
             Team2 = game.Team2

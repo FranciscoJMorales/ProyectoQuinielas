@@ -49,6 +49,9 @@ public partial class QuinielasContext : DbContext
                 .IsRequired()
                 .HasDefaultValueSql("b'1'")
                 .HasColumnName("active");
+            entity.Property(e => e.Deadline)
+                .HasColumnType("datetime")
+                .HasColumnName("deadline");
             entity.Property(e => e.GameDate)
                 .HasColumnType("datetime")
                 .HasColumnName("game_date");

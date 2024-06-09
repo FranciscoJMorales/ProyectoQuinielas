@@ -24,5 +24,8 @@ namespace QuinielasModel.DTO.Games
 
         [DisplayName("Fecha")]
         public DateTime GameDate { get; set; }
+
+        [DisplayName("Fecha límite para predicciones")]
+        public DateTime Deadline { get; set; }
     }
 }

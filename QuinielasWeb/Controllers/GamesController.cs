@@ -51,7 +51,7 @@ namespace QuinielasWeb.Controllers
             var pool = await _poolsService.GetPoolId(id);
             var now = DateTime.Now;
             var start = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
-            var newGame = new NewGame { PoolId = id, PoolName = pool!.Name, GameDate = start };
+            var newGame = new NewGame { PoolId = id, PoolName = pool!.Name, GameDate = start, Deadline = start };
             return View(newGame);
         }
 

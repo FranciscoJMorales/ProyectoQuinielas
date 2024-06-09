@@ -239,7 +239,7 @@
                                             result = $"Resultado del partido: {item.Team1Score} - {item.Team2Score}";
                                         <tr>
                                             <td>@number</td>
-                                            <td>@item.GameDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@item.GameDate.ToString("dd/MM/yyyy")</td>
                                             <td>@item.Team1 - @item.Team2</td>
                                             <td class="text-center">@item.Team1Score - @item.Team2Score</td>
                                             @if (Model.IsParticipant)
@@ -262,7 +262,6 @@
                                 </tbody>
                             </table>
                             <!-- End Games Table -->
-                            <p class="mt-4">Recuerda que la fecha límite para el envío de predicciones es hasta un día antes del partido.</p>
                         </div>
                         <!-- End Games -->
 
